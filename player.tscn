@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://dhl72ijpyhoyh"]
+
+[ext_resource type="Script" path="res://player.gd" id="2_ivawi"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_n3mno"]
+radius = 0.25
+height = 1.5
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ede56"]
+radius = 0.28
+height = 1.5
+
+[node name="player" type="RigidBody3D"]
+script = ExtResource("2_ivawi")
+
+[node name="piv" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.573678, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="piv"]
+spring_length = 2.0
+
+[node name="Camera3D" type="Camera3D" parent="piv/SpringArm3D"]
+current = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_n3mno")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_ede56")
