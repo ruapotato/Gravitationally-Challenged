@@ -23,6 +23,7 @@ var gravity_inverted: bool = false
 var camera_original_position: Vector3
 var camera_original_rotation: Vector3
 var target_camera_rotation: Vector3
+var current_camera_height: float = 0.44
 
 func _ready() -> void:
 	# Configure RigidBody properties
@@ -41,34 +42,30 @@ func _ready() -> void:
 	camera_original_rotation = camera_arm.rotation
 	target_camera_rotation = cam_piv.rotation
 	
-	# Set up pivot
+	# Set up pivot at player's position
 	cam_piv.top_level = true
-	cam_piv.position.y = 0.44
+	cam_piv.position = Vector3.ZERO
 
 func update_camera(delta: float) -> void:
-	cam_piv.global_position = global_position + Vector3(0, 0.44, 0)
+	# Keep pivot exactly at player center
+	cam_piv.global_position = global_position
 	
-	# Only interpolate the Z rotation for gravity flips
+	# Smoothly interpolate camera height
+	var target_height = 0.44 * (1 if !gravity_inverted else -1)
+	current_camera_height = lerp(current_camera_height, target_height, delta * 5.0)
+	camera_arm.position = Vector3(0, current_camera_height, 0)
+	
+	# Smoothly interpolate camera rotation
 	var current_rot = cam_piv.rotation
-	var target_z = target_camera_rotation.z
-	
-	current_rot.z = lerp_angle(current_rot.z, target_z, delta * 5.0)
+	current_rot.z = lerp_angle(current_rot.z, target_camera_rotation.z, delta * 5.0)
 	cam_piv.rotation = current_rot
-	
-	# Keep camera offset position
-	camera_arm.position = camera_arm.position.lerp(camera_original_position, CAMERA_LERP_SPEED)
 
 func flip_gravity() -> void:
 	# Update gravity state
 	gravity_inverted = !gravity_inverted
-	
-	# Flip gravity scale
 	gravity_scale = -gravity_scale
 	
-	# Reset vertical velocity to prevent momentum issues
-	linear_velocity.y = 0
-	
-	# Set target Z rotation based on gravity state, preserve Y rotation
+	# Update target rotation, preserving Y rotation
 	target_camera_rotation = cam_piv.rotation
 	target_camera_rotation.z = float(gravity_inverted) * PI
 
