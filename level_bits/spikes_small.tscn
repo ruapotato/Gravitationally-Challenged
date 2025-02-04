@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://cstyfyemvu5hs"]
+
+[ext_resource type="Script" path="res://level_bits/spikes.gd" id="1_ayig4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8l7et"]
+size = Vector3(1, 0.581, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_86agv"]
+size = Vector3(1, 0.185, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_cqq3f"]
+top_radius = 0.0
+bottom_radius = 0.475
+height = 0.81
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ahmt3"]
+size = Vector3(1.045, 0.2, 1.08)
+
+[node name="spikes_small" type="Area3D"]
+script = ExtResource("1_ayig4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.159424, 0)
+shape = SubResource("BoxShape3D_8l7et")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.344724, 0)
+mesh = SubResource("BoxMesh_86agv")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.160125, 0)
+mesh = SubResource("CylinderMesh_cqq3f")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.435059, 0)
+shape = SubResource("BoxShape3D_ahmt3")

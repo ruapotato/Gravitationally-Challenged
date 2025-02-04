@@ -1,0 +1,52 @@
+[gd_scene load_steps=7 format=3 uid="uid://d2k4sjk2nqlkk"]
+
+[ext_resource type="PackedScene" uid="uid://b0wptwcibhq22" path="res://level_bits/cylinder_level_walls.tscn" id="1_8jgs4"]
+[ext_resource type="PackedScene" uid="uid://bfc7h1id7p8rn" path="res://level_bits/ground_small.tscn" id="2_gpp5a"]
+[ext_resource type="PackedScene" uid="uid://bk4crbtc3ibeq" path="res://level_bits/bucket.tscn" id="3_qp3ub"]
+[ext_resource type="PackedScene" uid="uid://cstyfyemvu5hs" path="res://level_bits/spikes_small.tscn" id="4_34602"]
+[ext_resource type="PackedScene" uid="uid://cfux4xni8bt0e" path="res://level_bits/check_point.tscn" id="5_x3q4r"]
+[ext_resource type="PackedScene" uid="uid://8u2c5gi5txf8" path="res://level_bits/level_portal.tscn" id="6_akp7g"]
+
+[node name="hub" type="Node3D"]
+
+[node name="cylinder_level_walls" parent="." instance=ExtResource("1_8jgs4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 24.0063, 0)
+
+[node name="ground_small" parent="." instance=ExtResource("2_gpp5a")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.48059, 19.4652)
+
+[node name="bucket" parent="." instance=ExtResource("3_qp3ub")]
+transform = Transform3D(-1, 8.9407e-08, 0, -8.9407e-08, -1, 0, 0, 0, 1, -1.83557, 6.74351, 20.9525)
+
+[node name="spikes_small" parent="." instance=ExtResource("4_34602")]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 3.88762, 18.4515)
+
+[node name="spikes_small2" parent="." instance=ExtResource("4_34602")]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 3.88762, 17.4515)
+
+[node name="spikes_small3" parent="." instance=ExtResource("4_34602")]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, 0, 3.88762, 16.4515)
+
+[node name="spikes_small4" parent="." instance=ExtResource("4_34602")]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, 1, 3.88762, 18.4515)
+
+[node name="spikes_small5" parent="." instance=ExtResource("4_34602")]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, 1, 3.88762, 17.4515)
+
+[node name="spikes_small6" parent="." instance=ExtResource("4_34602")]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, 1, 3.88762, 16.4515)
+
+[node name="spikes_small7" parent="." instance=ExtResource("4_34602")]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, -1, 3.88762, 18.4515)
+
+[node name="spikes_small8" parent="." instance=ExtResource("4_34602")]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, -1, 3.88762, 17.4515)
+
+[node name="spikes_small9" parent="." instance=ExtResource("4_34602")]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, -1, 3.88762, 16.4515)
+
+[node name="check_point" parent="." instance=ExtResource("5_x3q4r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.224623, 11.0537, 17.7152)
+
+[node name="level_portal_level1" parent="." instance=ExtResource("6_akp7g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.65385, 16.6143)

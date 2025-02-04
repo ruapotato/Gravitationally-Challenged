@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://6wcubctb0tnl"]
+
+[ext_resource type="PackedScene" uid="uid://bhvsiqa1py2gh" path="res://level_bits/cube_level_walls.tscn" id="1_4fwrk"]
+[ext_resource type="PackedScene" uid="uid://8u2c5gi5txf8" path="res://level_bits/level_portal.tscn" id="2_mpw6f"]
+
+[node name="level1" type="Node3D"]
+
+[node name="cube_level_walls" parent="." instance=ExtResource("1_4fwrk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.6078, 48.8506, -43.6575)
+
+[node name="level_portal_hub" parent="." instance=ExtResource("2_mpw6f")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -8.36944, 0, 0)

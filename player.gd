@@ -25,6 +25,9 @@ var camera_original_rotation: Vector3
 var target_camera_rotation: Vector3
 var current_camera_height: float = 0.44
 
+var saved_check_point = Vector3(0,0,0)
+var saved_check_point_gravity = GRAVITY_SCALE
+
 func _ready() -> void:
 	# Configure RigidBody properties
 	lock_rotation = true
@@ -34,6 +37,7 @@ func _ready() -> void:
 	angular_damp = 0.0
 	can_sleep = false
 	gravity_scale = GRAVITY_SCALE
+	load_check_point()
 	
 	# Set up camera
 	camera_arm.spring_length = (MIN_ZOOM + MAX_ZOOM) / 2
@@ -45,6 +49,18 @@ func _ready() -> void:
 	# Set up pivot at player's position
 	cam_piv.top_level = true
 	cam_piv.position = Vector3.ZERO
+
+func load_check_point():
+	global_position = saved_check_point
+	if saved_check_point_gravity != gravity_scale:
+		flip_gravity()
+
+func save_check_point(to_this_point):
+	if to_this_point != saved_check_point:
+		saved_check_point = to_this_point
+
+func die():
+	load_check_point()
 
 func update_camera(delta: float) -> void:
 	# Keep pivot exactly at player center
