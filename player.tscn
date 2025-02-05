@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://dhl72ijpyhoyh"]
+[gd_scene load_steps=6 format=3 uid="uid://dhl72ijpyhoyh"]
 
 [ext_resource type="PackedScene" uid="uid://ci6dvjpgwuevu" path="res://import/player.glb" id="2_5hcgc"]
 [ext_resource type="Script" path="res://player.gd" id="2_ivawi"]
+[ext_resource type="Script" path="res://legs.gd" id="3_pa33j"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_uwbmy"]
 radius = 0.04
@@ -27,7 +28,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.864618, -0.0649178)
 shape = SubResource("SphereShape3D_uwbmy")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.125642, -0.279737)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.125642, 0.00422454)
 shape = SubResource("CapsuleShape3D_xvyu2")
 
 [node name="center" type="Node3D" parent="."]
@@ -43,3 +44,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.120642, 0.871933, 0.088572
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.105191, 0.871933, 0.0914997)
 
 [node name="mesh" parent="." instance=ExtResource("2_5hcgc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.254869, 0)
+
+[node name="LegAnimator" type="Node3D" parent="mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29914, 0)
+script = ExtResource("3_pa33j")

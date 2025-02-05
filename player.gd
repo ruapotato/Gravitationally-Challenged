@@ -4,6 +4,7 @@ extends RigidBody3D
 @onready var camera_arm = $piv/SpringArm3D
 @onready var camera = $piv/SpringArm3D/Camera3D
 @onready var mesh = $mesh
+@onready var leg_animator = $mesh/LegAnimator
 
 # Movement constants
 const MOVEMENT_FORCE = 140.0
@@ -15,9 +16,9 @@ const MAX_ZOOM = 10.0
 const LERP_VAL = 0.15
 const GRAVITY_SCALE = 3.0
 const ROTATION_SPEED = 10.0
-const MIN_STRETCH = 1.0
-const MAX_STRETCH = 1.2
-const STRETCH_SPEED = 4.0
+const MIN_STRETCH = 0.7
+const MAX_STRETCH = 0.8
+const STRETCH_SPEED = 8.0
 
 # State handling
 enum ActionState {IDLE, WALK}
@@ -40,6 +41,7 @@ var last_movement_direction: Vector3 = Vector3.FORWARD  # Store last movement di
 
 func _ready() -> void:
 	# Configure RigidBody properties
+	camera_arm.add_excluded_object(mesh)
 	lock_rotation = true
 	freeze = false
 	contact_monitor = true
@@ -66,6 +68,13 @@ func _ready() -> void:
 	
 	# Initialize mesh transform
 	update_target_mesh_transform(Vector3.FORWARD)
+	
+	# Ensure the leg animator exists
+	if !leg_animator:
+		var leg_anim = preload("res://legs.gd").new()
+		leg_anim.name = "LegAnimator"
+		mesh.add_child(leg_anim)
+		leg_animator = leg_anim
 
 func update_target_mesh_transform(velocity: Vector3) -> void:
 	var speed = velocity.length() / MAX_VELOCITY
@@ -90,6 +99,9 @@ func update_target_mesh_transform(velocity: Vector3) -> void:
 	
 	# Combine transformations
 	target_mesh_transform = Transform3D(look_basis, mesh.position) * stretch * flip
+	
+	# Animate legs based on current speed
+	leg_animator.animate_legs(get_physics_process_delta_time(), speed)
 
 func update_mesh_transform(delta: float) -> void:
 	mesh.transform = mesh.transform.interpolate_with(target_mesh_transform, delta * ROTATION_SPEED)
@@ -143,8 +155,10 @@ func flip_gravity() -> void:
 	
 	# Update mesh transform using last known direction
 	update_target_mesh_transform(last_movement_direction)
+	
+	# Flip the legs
+	leg_animator.flip_gravity()
 
-# Rest of the code remains unchanged
 func load_check_point():
 	global_position = saved_check_point
 	if saved_check_point_gravity != gravity_scale:
