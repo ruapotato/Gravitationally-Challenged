@@ -3,6 +3,7 @@ extends RigidBody3D
 @onready var cam_piv = $piv
 @onready var camera_arm = $piv/SpringArm3D
 @onready var camera = $piv/SpringArm3D/Camera3D
+@onready var mesh = $mesh
 
 # Movement constants
 const MOVEMENT_FORCE = 140.0
@@ -13,6 +14,10 @@ const MIN_ZOOM = 1.0
 const MAX_ZOOM = 10.0
 const LERP_VAL = 0.15
 const GRAVITY_SCALE = 3.0
+const ROTATION_SPEED = 10.0
+const MIN_STRETCH = 1.0
+const MAX_STRETCH = 1.2
+const STRETCH_SPEED = 4.0
 
 # State handling
 enum ActionState {IDLE, WALK}
@@ -25,8 +30,13 @@ var camera_original_rotation: Vector3
 var target_camera_rotation: Vector3
 var current_camera_height: float = 0.44
 
+# Movement and visual variables
 var saved_check_point = Vector3(0,0,0)
 var saved_check_point_gravity = GRAVITY_SCALE
+var base_mesh_scale: Vector3
+var current_stretch: float = MIN_STRETCH
+var target_mesh_transform: Transform3D
+var last_movement_direction: Vector3 = Vector3.FORWARD  # Store last movement direction
 
 func _ready() -> void:
 	# Configure RigidBody properties
@@ -37,6 +47,10 @@ func _ready() -> void:
 	angular_damp = 0.0
 	can_sleep = false
 	gravity_scale = GRAVITY_SCALE
+	
+	# Store the original mesh scale
+	base_mesh_scale = mesh.scale
+	
 	load_check_point()
 	
 	# Set up camera
@@ -49,41 +63,36 @@ func _ready() -> void:
 	# Set up pivot at player's position
 	cam_piv.top_level = true
 	cam_piv.position = Vector3.ZERO
-
-func load_check_point():
-	global_position = saved_check_point
-	if saved_check_point_gravity != gravity_scale:
-		flip_gravity()
-
-func save_check_point(to_this_point):
-	if to_this_point != saved_check_point:
-		saved_check_point = to_this_point
-
-func die():
-	load_check_point()
-
-func update_camera(delta: float) -> void:
-	# Keep pivot exactly at player center
-	cam_piv.global_position = global_position
 	
-	# Smoothly interpolate camera height
-	var target_height = 0.44 * (1 if !gravity_inverted else -1)
-	current_camera_height = lerp(current_camera_height, target_height, delta * 5.0)
-	camera_arm.position = Vector3(0, current_camera_height, 0)
-	
-	# Smoothly interpolate camera rotation
-	var current_rot = cam_piv.rotation
-	current_rot.z = lerp_angle(current_rot.z, target_camera_rotation.z, delta * 5.0)
-	cam_piv.rotation = current_rot
+	# Initialize mesh transform
+	update_target_mesh_transform(Vector3.FORWARD)
 
-func flip_gravity() -> void:
-	# Update gravity state
-	gravity_inverted = !gravity_inverted
-	gravity_scale = -gravity_scale
+func update_target_mesh_transform(velocity: Vector3) -> void:
+	var speed = velocity.length() / MAX_VELOCITY
+	current_stretch = lerp(current_stretch, lerp(MIN_STRETCH, MAX_STRETCH, speed), get_physics_process_delta_time() * STRETCH_SPEED)
 	
-	# Update target rotation, preserving Y rotation
-	target_camera_rotation = cam_piv.rotation
-	target_camera_rotation.z = float(gravity_inverted) * PI
+	# Update last movement direction if we have significant velocity
+	if velocity.length_squared() > 0.01:
+		last_movement_direction = velocity.normalized()
+	
+	# Always use the last valid movement direction for the look basis
+	var look_basis = Basis.looking_at(last_movement_direction, Vector3.UP)
+	
+	# Create stretch transform
+	var stretch = Transform3D()
+	stretch = stretch.scaled(Vector3(1, 1, current_stretch))
+	
+	# Create flip transform
+	var flip = Transform3D()
+	if gravity_inverted:
+		flip = flip.rotated(Vector3.RIGHT, PI)
+		flip = flip.rotated(Vector3.UP, PI)
+	
+	# Combine transformations
+	target_mesh_transform = Transform3D(look_basis, mesh.position) * stretch * flip
+
+func update_mesh_transform(delta: float) -> void:
+	mesh.transform = mesh.transform.interpolate_with(target_mesh_transform, delta * ROTATION_SPEED)
 
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	var current_velocity = state.linear_velocity
@@ -113,11 +122,54 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	state.linear_velocity.z = horizontal_velocity.z
 	
 	# Limit maximum horizontal velocity
-	horizontal_velocity = Vector3(state.linear_velocity.x, 0, state.linear_velocity.z)
 	if horizontal_velocity.length() > MAX_VELOCITY:
 		horizontal_velocity = horizontal_velocity.normalized() * MAX_VELOCITY
 		state.linear_velocity.x = horizontal_velocity.x
 		state.linear_velocity.z = horizontal_velocity.z
+	
+	# Update target mesh transform
+	update_target_mesh_transform(horizontal_velocity)
+	# Update actual mesh transform
+	update_mesh_transform(state.step)
+
+func flip_gravity() -> void:
+	# Update gravity state
+	gravity_inverted = !gravity_inverted
+	gravity_scale = -gravity_scale
+	
+	# Update target rotation for camera, preserving Y rotation
+	target_camera_rotation = cam_piv.rotation
+	target_camera_rotation.z = float(gravity_inverted) * PI
+	
+	# Update mesh transform using last known direction
+	update_target_mesh_transform(last_movement_direction)
+
+# Rest of the code remains unchanged
+func load_check_point():
+	global_position = saved_check_point
+	if saved_check_point_gravity != gravity_scale:
+		flip_gravity()
+
+func save_check_point(to_this_point):
+	if to_this_point != saved_check_point:
+		saved_check_point = to_this_point
+
+func die():
+	load_check_point()
+
+func update_camera(delta: float) -> void:
+	# Keep pivot exactly at player center
+	cam_piv.global_position = global_position
+	
+	# Smoothly interpolate camera height
+	var target_height = 0.44 * (1 if !gravity_inverted else -1)
+	current_camera_height = lerp(current_camera_height, target_height, delta * 5.0)
+	camera_arm.position = Vector3(0, current_camera_height, 0)
+	
+	# Smoothly interpolate camera rotation
+	var current_rot = cam_piv.rotation
+	current_rot.z = lerp_angle(current_rot.z, target_camera_rotation.z, delta * 5.0)
+	cam_piv.rotation = current_rot
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
