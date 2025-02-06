@@ -5,7 +5,7 @@ extends Node3D
 
 const LEG_SPEED = 8.0  # Speed of leg swing
 const MAX_ANGLE = PI/10  # Maximum swing angle 
-const LEG_LENGTH = 0.25  # Length of each leg
+const LEG_LENGTH = 0.35  # Length of each leg
 const RESET_SPEED = 5.0  # Speed at which legs return to neutral
 
 var time: float = 0.0

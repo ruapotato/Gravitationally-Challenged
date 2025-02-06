@@ -5,6 +5,7 @@ extends RigidBody3D
 @onready var camera = $piv/SpringArm3D/Camera3D
 @onready var mesh = $mesh
 @onready var leg_animator = $mesh/LegAnimator
+@onready var sword = $mesh/sword
 
 # Movement constants
 const MOVEMENT_FORCE = 140.0
@@ -263,6 +264,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	elif event.is_action_pressed("swipe"):
+		sword.swipe()
 
 func _process(delta: float) -> void:
 	update_camera(delta)

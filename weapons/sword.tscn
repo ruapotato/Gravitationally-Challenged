@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://bif4c56lalkna"]
+
+[ext_resource type="Script" path="res://weapons/sword.gd" id="1_0ll7p"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_5hnmv"]
+size = Vector3(0.84, 0.225, 0.27)
+
+[sub_resource type="BoxMesh" id="BoxMesh_e8t01"]
+size = Vector3(0.12, 0.34, 0.23)
+
+[sub_resource type="PrismMesh" id="PrismMesh_tu3kn"]
+size = Vector3(0.08, 2.745, 0.375)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_tra24"]
+radius = 2.05
+
+[node name="sword" type="Node3D"]
+script = ExtResource("1_0ll7p")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(6.84757e-09, 0.0687001, 0.148632, 2.81593e-09, -0.16706, 0.0611221, 0.169383, 1.91254e-23, -7.02481e-09, 0.305602, -0.166896, 0)
+mesh = SubResource("BoxMesh_5hnmv")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(6.84757e-09, 0.0687001, 0.148632, 2.81593e-09, -0.16706, 0.0611221, 0.169383, 1.91254e-23, -7.02481e-09, 0.290145, -0.129307, 0)
+mesh = SubResource("BoxMesh_e8t01")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.148632, 0.0687001, 8.88178e-16, -0.0611221, -0.16706, 0, 0, -3.00884e-16, 0.169383, 0.406979, -0.417175, -1.39472e-15)
+mesh = SubResource("PrismMesh_tu3kn")
+
+[node name="Cutting Edge" type="Area3D" parent="MeshInstance3D2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D2/Cutting Edge"]
+shape = SubResource("SphereShape3D_tra24")
