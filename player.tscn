@@ -10,6 +10,7 @@ radius = 0.09
 height = 1.325
 
 [node name="player" type="RigidBody3D"]
+mass = 2.0
 script = ExtResource("2_ivawi")
 
 [node name="piv" type="Node3D" parent="."]
