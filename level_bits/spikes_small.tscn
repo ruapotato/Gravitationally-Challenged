@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://level_bits/spikes.gd" id="1_ayig4"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_8l7et"]
-size = Vector3(1, 0.581, 1)
+size = Vector3(0.8, 0.541, 0.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_86agv"]
 size = Vector3(1, 0.185, 1)

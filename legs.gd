@@ -1,7 +1,7 @@
 extends Node3D
 
-@onready var left_leg = $left_leg
-@onready var right_leg = $right_leg
+@onready var left_leg = null
+@onready var right_leg = null
 
 const LEG_SPEED = 8.0  # Speed of leg swing
 const MAX_ANGLE = PI/10  # Maximum swing angle 
