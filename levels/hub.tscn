@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://d2k4sjk2nqlkk"]
+[gd_scene load_steps=8 format=3 uid="uid://d2k4sjk2nqlkk"]
 
 [ext_resource type="PackedScene" uid="uid://b0wptwcibhq22" path="res://level_bits/cylinder_level_walls.tscn" id="1_8jgs4"]
 [ext_resource type="PackedScene" uid="uid://bfc7h1id7p8rn" path="res://level_bits/ground_small.tscn" id="2_gpp5a"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cstyfyemvu5hs" path="res://level_bits/spikes_small.tscn" id="4_34602"]
 [ext_resource type="PackedScene" uid="uid://cfux4xni8bt0e" path="res://level_bits/check_point.tscn" id="5_x3q4r"]
 [ext_resource type="PackedScene" uid="uid://8u2c5gi5txf8" path="res://level_bits/level_portal.tscn" id="6_akp7g"]
+[ext_resource type="PackedScene" uid="uid://bkq53i8fkkjf8" path="res://entities/blob.tscn" id="7_4wvlx"]
 
 [node name="hub" type="Node3D"]
 
@@ -50,3 +51,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.224623, 11.0537, 17.7152)
 
 [node name="level_portal_level1" parent="." instance=ExtResource("6_akp7g")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.65385, 16.6143)
+
+[node name="blob" parent="." instance=ExtResource("7_4wvlx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.355517, 2.5636)
