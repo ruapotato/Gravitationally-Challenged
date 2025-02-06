@@ -219,6 +219,7 @@ func load_check_point():
 func save_check_point(to_this_point):
 	if to_this_point != saved_check_point:
 		saved_check_point = to_this_point
+		saved_check_point_gravity = gravity_scale
 
 func die():
 	if not is_invulnerable:
