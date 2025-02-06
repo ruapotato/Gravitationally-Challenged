@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://bkq53i8fkkjf8"]
+
+[ext_resource type="PackedScene" uid="uid://c6bqwcdghnrhp" path="res://import/blob.glb" id="1_1aeha"]
+[ext_resource type="Script" path="res://entities/blob.gd" id="1_eirte"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c6qkn"]
+size = Vector3(0.51, 0.355, 0.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bkb0v"]
+size = Vector3(0.315, 0.085, 0.265)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kk2ey"]
+size = Vector3(0.54, 0.3, 0.525)
+
+[node name="blob" type="CharacterBody3D"]
+script = ExtResource("1_eirte")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.192234, -0.0446115)
+shape = SubResource("BoxShape3D_c6qkn")
+
+[node name="mesh" type="Node3D" parent="."]
+
+[node name="blob2" parent="mesh" instance=ExtResource("1_1aeha")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="KillArea3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="KillArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.397482, 0.0184115)
+shape = SubResource("BoxShape3D_bkb0v")
+
+[node name="biteArea3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="biteArea3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.170881, -0.050906)
+shape = SubResource("BoxShape3D_kk2ey")
