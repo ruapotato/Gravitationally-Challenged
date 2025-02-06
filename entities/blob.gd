@@ -62,6 +62,9 @@ func process_death_animation(delta: float) -> bool:
 		return true
 	return false
 
+func die():
+	start_death_sequence()
+
 func am_i_dead():
 	if not is_dying and player in vulnerable_zone.get_overlapping_bodies():
 		start_death_sequence()
