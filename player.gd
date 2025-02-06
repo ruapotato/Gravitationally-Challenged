@@ -8,14 +8,15 @@ extends RigidBody3D
 @onready var sword = $mesh/sword
 
 # Movement constants
-const MOVEMENT_FORCE = 140.0
-const FRICTION_FORCE = 10.0
-const MAX_VELOCITY = 1.0
+const MOVEMENT_FORCE = 200.0
+const MAX_VELOCITY = 3.0
+const MAX_FALL_VELOCITY = 15.0
+const FRICTION_FORCE = 5.0
 const CAMERA_LERP_SPEED = 0.1
 const MIN_ZOOM = 1.0
 const MAX_ZOOM = 10.0
 const LERP_VAL = 0.15
-const GRAVITY_SCALE = 3.0
+const GRAVITY_SCALE = 1.0
 const ROTATION_SPEED = 10.0
 const MIN_STRETCH = 0.7
 const MAX_STRETCH = 0.8
@@ -52,12 +53,14 @@ var target_mesh_transform: Transform3D
 var last_movement_direction: Vector3 = Vector3.FORWARD
 
 func _ready() -> void:
-	# Configure RigidBody properties
+	# Configure RigidBody properties 
+	camera_arm.add_excluded_object(self)
 	camera_arm.add_excluded_object(mesh)
+	camera_arm.add_excluded_object(sword)
 	lock_rotation = true
 	freeze = false
 	contact_monitor = true
-	linear_damp = 1.0
+	linear_damp = 0.01  # Reduced for smoother movement
 	angular_damp = 0.0
 	can_sleep = false
 	gravity_scale = GRAVITY_SCALE
@@ -69,7 +72,6 @@ func _ready() -> void:
 	load_check_point()
 	
 	# Set up camera
-	camera_arm.spring_length = (MIN_ZOOM + MAX_ZOOM) / 2
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	camera_original_position = camera_arm.position
 	camera_original_rotation = camera_arm.rotation
@@ -95,14 +97,10 @@ func start_knockdown() -> void:
 		action_state = ActionState.KNOCKDOWN
 		knockdown_timer = 0.0
 		
-		# Store initial rotation and calculate target rotation
 		initial_knockdown_rotation = mesh.rotation
-		# Rotate 90 degrees to the side based on current movement direction
-		var side_direction = last_movement_direction.cross(Vector3.UP)
 		target_knockdown_rotation = initial_knockdown_rotation
 		target_knockdown_rotation += Vector3(0, 0, PI/2 if gravity_inverted else -PI/2)
 		
-		# Disable physics processing
 		lock_rotation = true
 		freeze = true
 
@@ -111,15 +109,12 @@ func process_knockdown(delta: float) -> void:
 		knockdown_timer += delta
 		
 		if knockdown_timer <= KNOCKDOWN_DURATION:
-			# Interpolate rotation
-			var progress = min(knockdown_timer / 0.5, 1.0)  # Quick fall over animation
+			var progress = min(knockdown_timer / 0.5, 1.0)
 			mesh.rotation = initial_knockdown_rotation.lerp(target_knockdown_rotation, ease(progress, delta))
 			
-			# Lower mesh to ground level when knocked down
 			var height_adjustment = Vector3(0, -MESH_HEIGHT if not gravity_inverted else MESH_HEIGHT, 0)
 			mesh.position = initial_mesh_position.lerp(initial_mesh_position + height_adjustment, ease(progress, delta))
 		else:
-			# Reset everything
 			is_knocked_down = false
 			freeze = false
 			start_invulnerability()
@@ -138,7 +133,6 @@ func process_invulnerability(delta: float) -> void:
 		if invulnerability_timer >= INVULNERABILITY_DURATION:
 			is_invulnerable = false
 		
-		# Optional: Make mesh blink during invulnerability
 		if mesh:
 			mesh.visible = fmod(invulnerability_timer, 0.2) < 0.1
 
@@ -175,32 +169,41 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 		return
 		
 	var current_velocity = state.linear_velocity
-	var current_speed = current_velocity.length()
 	
+	# Separate vertical and horizontal velocity
+	var vertical_velocity = Vector3(0, current_velocity.y, 0)
+	var horizontal_velocity = Vector3(current_velocity.x, 0, current_velocity.z)
+	
+	# Handle input
 	var input_dir := Input.get_vector("left", "right", "up", "down") if !gravity_inverted else Input.get_vector("right", "left", "up", "down")
 	var direction = Vector3(input_dir.x, 0, input_dir.y).normalized()
-	
 	direction = direction.rotated(Vector3.UP, cam_piv.rotation.y)
 	
+	# Update state and apply movement
 	if direction:
 		if action_state == ActionState.IDLE:
 			action_state = ActionState.WALK
-			
 		state.apply_central_force(direction * MOVEMENT_FORCE)
 	else:
 		if action_state == ActionState.WALK:
 			action_state = ActionState.IDLE
 	
-	var horizontal_velocity = Vector3(current_velocity.x, 0, current_velocity.z)
-	horizontal_velocity = horizontal_velocity.move_toward(Vector3.ZERO, FRICTION_FORCE * state.step)
-	state.linear_velocity.x = horizontal_velocity.x
-	state.linear_velocity.z = horizontal_velocity.z
+	# Apply single friction source when not moving
+	if !direction:
+		horizontal_velocity *= (1.0 - state.step * 1.5)
 	
+	# Speed limits
 	if horizontal_velocity.length() > MAX_VELOCITY:
 		horizontal_velocity = horizontal_velocity.normalized() * MAX_VELOCITY
-		state.linear_velocity.x = horizontal_velocity.x
-		state.linear_velocity.z = horizontal_velocity.z
 	
+	# Apply fall speed limit
+	if abs(vertical_velocity.y) > MAX_FALL_VELOCITY:
+		vertical_velocity.y = MAX_FALL_VELOCITY * sign(vertical_velocity.y)
+	
+	# Combine velocities 
+	state.linear_velocity = horizontal_velocity + vertical_velocity
+	
+	# Update visuals
 	update_target_mesh_transform(horizontal_velocity)
 	update_mesh_transform(state.step)
 

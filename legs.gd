@@ -12,13 +12,32 @@ var time: float = 0.0
 var current_speed: float = 0.0
 var gravity_inverted: bool = false
 var target_rotation = Vector3.ZERO
+var level_loader
+var player
+var cam_arm
 
 func _ready():
+	level_loader = find_root()
+	player = level_loader.find_child("player")
+	cam_arm = player.find_child("SpringArm3D")
+	
 	# Create the leg meshes if they don't exist
 	if !left_leg:
 		left_leg = create_leg_mesh("left_leg", -0.1)  # Offset to the left
 	if !right_leg:
 		right_leg = create_leg_mesh("right_leg", 0.1)  # Offset to the right
+	
+	cam_arm.add_excluded_object(self)
+
+func find_root(node=get_tree().root) -> Node:
+	if node.name.to_lower() == "level_loader":
+		return node
+	for child in node.get_children():
+		var found = find_root(child)
+		if found:
+			return found
+	return null
+
 
 func create_leg_mesh(name: String, offset: float) -> Node3D:
 	# Create a root node for the leg system
@@ -41,7 +60,6 @@ func create_leg_mesh(name: String, offset: float) -> Node3D:
 	
 	# Position the leg mesh to hang down from its pivot point
 	leg.position = Vector3(0, -LEG_LENGTH/2, 0)
-	
 	root.add_child(leg)
 	return root
 
