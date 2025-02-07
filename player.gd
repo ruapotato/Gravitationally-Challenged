@@ -10,7 +10,7 @@ extends RigidBody3D
 # Movement constants
 const MOVEMENT_FORCE = 200.0
 const MAX_VELOCITY = 3.0
-const MAX_FALL_VELOCITY = 12.0
+const MAX_FALL_VELOCITY = 50.0
 const FRICTION_FORCE = 5.0
 const CAMERA_LERP_SPEED = 0.1
 const MIN_ZOOM = 1.0
@@ -172,18 +172,44 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	var direction = Vector3(input_dir.x, 0, input_dir.y).normalized()
 	direction = direction.rotated(Vector3.UP, cam_piv.rotation.y)
 	
-	if direction:
-		# Create a PhysicsRayQueryParameters3D to check for collisions
-		var space_state = get_world_3d().direct_space_state
-		var ray_origin = global_position
-		var ray_end = ray_origin + direction * (MAX_VELOCITY * get_physics_process_delta_time() + 0.1) # Add small buffer
-		
+	# Wall collision prediction for fast movement
+	var space_state = get_world_3d().direct_space_state
+	var prediction_distance = abs(vertical_velocity.y) * state.step * 2  # Look ahead two physics frames
+	var ray_origin = global_position
+	
+	# Create multiple raycasts in the fall direction to better detect walls
+	var rays = [
+		Vector3(0, sign(vertical_velocity.y), 0),  # Center ray
+		Vector3(0.3, sign(vertical_velocity.y), 0),  # Right ray
+		Vector3(-0.3, sign(vertical_velocity.y), 0),  # Left ray
+		Vector3(0, sign(vertical_velocity.y), 0.3),  # Front ray
+		Vector3(0, sign(vertical_velocity.y), -0.3)  # Back ray
+	]
+	
+	var will_hit_wall = false
+	for ray_offset in rays:
+		var ray_end = ray_origin + (ray_offset.normalized() * prediction_distance)
 		var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
-		query.exclude = [self]  # Exclude self from collision check
+		query.exclude = [self]
 		
 		var collision = space_state.intersect_ray(query)
+		if collision:
+			will_hit_wall = true
+			break
+	
+	# If we're going to hit a wall and moving fast, reduce speed
+	if will_hit_wall and abs(vertical_velocity.y) > MAX_FALL_VELOCITY * 0.2:
+		vertical_velocity.y /= 5
+	
+	# Regular horizontal movement checks
+	if direction:
+		var movement_ray_end = ray_origin + direction * (MAX_VELOCITY * state.step + 0.1)
+		var movement_query = PhysicsRayQueryParameters3D.create(ray_origin, movement_ray_end)
+		movement_query.exclude = [self]
 		
-		if !collision:  # Only apply force if no collision detected
+		var movement_collision = space_state.intersect_ray(movement_query)
+		
+		if !movement_collision:
 			if action_state == ActionState.IDLE:
 				action_state = ActionState.WALK
 			state.apply_central_force(direction * MOVEMENT_FORCE)
@@ -207,6 +233,7 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	
 	update_target_mesh_transform(horizontal_velocity)
 	update_mesh_transform(state.step)
+
 
 func flip_gravity() -> void:
 	gravity_inverted = !gravity_inverted
@@ -239,7 +266,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		cam_piv.rotate_y(-event.relative.x * 0.005)  # Invert the rotation to fix camera direction
 		camera_arm.rotate_x(-event.relative.y * 0.005)
-		camera_arm.rotation.x = clamp(camera_arm.rotation.x, -PI/3, PI/3)
+		camera_arm.rotation.x = clamp(camera_arm.rotation.x, -PI/2.1, PI/2.1)
 	
 	elif event.is_action_pressed("reverse"):
 		flip_gravity()

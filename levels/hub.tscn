@@ -52,5 +52,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.224623, 11.0537, 17.7152)
 [node name="level_portal_level1" parent="." instance=ExtResource("6_akp7g")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.65385, 16.6143)
 
+[node name="level_portal_level3" parent="." instance=ExtResource("6_akp7g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.197744, -2.54626)
+
 [node name="blob" parent="." instance=ExtResource("7_4wvlx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.355517, 11.255)
