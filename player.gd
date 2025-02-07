@@ -10,7 +10,7 @@ extends RigidBody3D
 # Movement constants
 const MOVEMENT_FORCE = 200.0
 const MAX_VELOCITY = 3.0
-const MAX_FALL_VELOCITY = 15.0
+const MAX_FALL_VELOCITY = 12.0
 const FRICTION_FORCE = 5.0
 const CAMERA_LERP_SPEED = 0.1
 const MIN_ZOOM = 1.0
@@ -156,6 +156,8 @@ func update_target_mesh_transform(velocity: Vector3) -> void:
 func update_mesh_transform(delta: float) -> void:
 	if not is_knocked_down:
 		mesh.transform = mesh.transform.interpolate_with(target_mesh_transform, delta * ROTATION_SPEED)
+
+
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	if is_knocked_down:
 		return
@@ -166,15 +168,28 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	var horizontal_velocity = Vector3(current_velocity.x, 0, current_velocity.z)
 	
 	# Get input and handle direction based on gravity
-	var input_dir
-	input_dir = Input.get_vector("left", "right", "up", "down") 
+	var input_dir = Input.get_vector("left", "right", "up", "down") 
 	var direction = Vector3(input_dir.x, 0, input_dir.y).normalized()
 	direction = direction.rotated(Vector3.UP, cam_piv.rotation.y)
 	
 	if direction:
-		if action_state == ActionState.IDLE:
-			action_state = ActionState.WALK
-		state.apply_central_force(direction * MOVEMENT_FORCE)
+		# Create a PhysicsRayQueryParameters3D to check for collisions
+		var space_state = get_world_3d().direct_space_state
+		var ray_origin = global_position
+		var ray_end = ray_origin + direction * (MAX_VELOCITY * get_physics_process_delta_time() + 0.1) # Add small buffer
+		
+		var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
+		query.exclude = [self]  # Exclude self from collision check
+		
+		var collision = space_state.intersect_ray(query)
+		
+		if !collision:  # Only apply force if no collision detected
+			if action_state == ActionState.IDLE:
+				action_state = ActionState.WALK
+			state.apply_central_force(direction * MOVEMENT_FORCE)
+		else:
+			if action_state == ActionState.WALK:
+				action_state = ActionState.IDLE
 	else:
 		if action_state == ActionState.WALK:
 			action_state = ActionState.IDLE
@@ -192,8 +207,6 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	
 	update_target_mesh_transform(horizontal_velocity)
 	update_mesh_transform(state.step)
-
-
 
 func flip_gravity() -> void:
 	gravity_inverted = !gravity_inverted
