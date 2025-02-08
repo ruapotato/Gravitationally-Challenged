@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bif4c56lalkna" path="res://weapons/sword.tscn" id="4_4lhy3"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sya21"]
+margin = 0.0
 radius = 0.09
 height = 1.325
 

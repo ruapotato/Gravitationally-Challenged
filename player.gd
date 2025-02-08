@@ -157,7 +157,6 @@ func update_mesh_transform(delta: float) -> void:
 	if not is_knocked_down:
 		mesh.transform = mesh.transform.interpolate_with(target_mesh_transform, delta * ROTATION_SPEED)
 
-
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	if is_knocked_down:
 		return
@@ -172,21 +171,24 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	var direction = Vector3(input_dir.x, 0, input_dir.y).normalized()
 	direction = direction.rotated(Vector3.UP, cam_piv.rotation.y)
 	
-	# Wall collision prediction for fast movement
+	# Wall collision prediction for next physics frame
 	var space_state = get_world_3d().direct_space_state
-	var prediction_distance = abs(vertical_velocity.y) * state.step * 5  # Look ahead two physics frames
+	var prediction_distance = abs(vertical_velocity.y) * state.step  # Look ahead one physics frame
 	var ray_origin = global_position
 	
-	# Create multiple raycasts in the fall direction to better detect walls
+	# Create multiple raycasts in the fall direction for better collision detection
 	var rays = [
-		Vector3(0, sign(vertical_velocity.y), 0),  # Center ray
-		Vector3(0.3, sign(vertical_velocity.y), 0),  # Right ray
-		Vector3(-0.3, sign(vertical_velocity.y), 0),  # Left ray
-		Vector3(0, sign(vertical_velocity.y), 0.3),  # Front ray
-		Vector3(0, sign(vertical_velocity.y), -0.3)  # Back ray
+		Vector3(0, sign(vertical_velocity.y), 0),  # Center
+		Vector3(0.3, sign(vertical_velocity.y), 0),  # Right
+		Vector3(-0.3, sign(vertical_velocity.y), 0),  # Left
+		Vector3(0, sign(vertical_velocity.y), 0.3),  # Front
+		Vector3(0, sign(vertical_velocity.y), -0.3)  # Back
 	]
 	
-	var will_hit_wall = false
+	var closest_collision_point = null
+	var closest_collision_distance = INF
+	
+	# Check each ray for collision
 	for ray_offset in rays:
 		var ray_end = ray_origin + (ray_offset.normalized() * prediction_distance)
 		var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
@@ -194,14 +196,20 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 		
 		var collision = space_state.intersect_ray(query)
 		if collision:
-			will_hit_wall = true
-			break
+			var collision_point = collision.position
+			var distance = ray_origin.distance_to(collision_point)
+			if distance < closest_collision_distance:
+				closest_collision_distance = distance
+				closest_collision_point = collision_point
 	
-	# If we're going to hit a wall and moving fast, reduce speed
-	if will_hit_wall and abs(vertical_velocity.y) > MAX_FALL_VELOCITY * 0.05:
-		vertical_velocity.y /= 5
+	# If collision detected, handle it
+	if closest_collision_point != null:
+		# Move slightly back from collision point to prevent clipping
+		var safe_position = closest_collision_point - (vertical_velocity.normalized() * 0.01)
+		state.transform.origin = safe_position
+		vertical_velocity = Vector3.ZERO
 	
-	# Regular horizontal movement checks
+	# Handle horizontal movement
 	if direction:
 		var movement_ray_end = ray_origin + direction * (MAX_VELOCITY * state.step + 0.1)
 		var movement_query = PhysicsRayQueryParameters3D.create(ray_origin, movement_ray_end)
@@ -214,6 +222,9 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 				action_state = ActionState.WALK
 			state.apply_central_force(direction * MOVEMENT_FORCE)
 		else:
+			# Stop at collision point for horizontal movement
+			var safe_position = movement_collision.position - (direction * 0.01)
+			horizontal_velocity = Vector3.ZERO
 			if action_state == ActionState.WALK:
 				action_state = ActionState.IDLE
 	else:
@@ -233,7 +244,6 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	
 	update_target_mesh_transform(horizontal_velocity)
 	update_mesh_transform(state.step)
-
 
 func flip_gravity() -> void:
 	gravity_inverted = !gravity_inverted
