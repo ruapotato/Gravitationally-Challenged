@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://bsl58gebtwki8"]
+
+[ext_resource type="Script" path="res://level_bits/key.gd" id="1_2vfdl"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_aphv7"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_juv5a"]
+radius = 0.08
+height = 0.81
+
+[node name="key" type="Area3D"]
+script = ExtResource("1_2vfdl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_aphv7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_juv5a")

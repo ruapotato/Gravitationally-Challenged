@@ -1,0 +1,79 @@
+[gd_scene load_steps=5 format=3 uid="uid://cs1so7yo7rrrp"]
+
+[ext_resource type="Script" path="res://2d_interfaces/main_menu.gd" id="1_dpsd7"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_w2d62"]
+font_size = 246
+
+[sub_resource type="FontVariation" id="FontVariation_uwvh7"]
+
+[sub_resource type="Theme" id="Theme_vran1"]
+Button/font_sizes/font_size = 99
+Button/fonts/font = SubResource("FontVariation_uwvh7")
+
+[node name="main_menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dpsd7")
+
+[node name="Play_Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 739.0
+offset_top = 4.0
+offset_right = 1234.0
+offset_bottom = 340.0
+text = "Play"
+label_settings = SubResource("LabelSettings_w2d62")
+
+[node name="Play1" type="Button" parent="Play_Label"]
+layout_mode = 0
+offset_left = 576.0
+offset_top = 135.0
+offset_right = 888.0
+offset_bottom = 278.0
+theme = SubResource("Theme_vran1")
+text = "Save 1"
+
+[node name="Play2" type="Button" parent="Play_Label"]
+layout_mode = 0
+offset_left = 576.0
+offset_top = 336.0
+offset_right = 888.0
+offset_bottom = 479.0
+theme = SubResource("Theme_vran1")
+text = "Save 2"
+
+[node name="Play3" type="Button" parent="Play_Label"]
+layout_mode = 0
+offset_left = 576.0
+offset_top = 534.0
+offset_right = 888.0
+offset_bottom = 677.0
+theme = SubResource("Theme_vran1")
+text = "Save 3"
+
+[node name="Play4" type="Button" parent="Play_Label"]
+layout_mode = 0
+offset_left = 576.0
+offset_top = 763.0
+offset_right = 888.0
+offset_bottom = 906.0
+theme = SubResource("Theme_vran1")
+text = "Save 4"
+
+[node name="Close this shit" type="Button" parent="."]
+layout_mode = 0
+offset_top = 31.0
+offset_right = 116.0
+offset_bottom = 62.0
+text = "Close this shit"
+
+[connection signal="pressed" from="Play_Label/Play1" to="." method="_on_play_1_pressed"]
+[connection signal="pressed" from="Play_Label/Play2" to="." method="_on_play_2_pressed"]
+[connection signal="pressed" from="Play_Label/Play3" to="." method="_on_play_3_pressed"]
+[connection signal="pressed" from="Play_Label/Play4" to="." method="_on_play_4_pressed"]
+[connection signal="pressed" from="Close this shit" to="." method="_on_close_this_shit_pressed"]
