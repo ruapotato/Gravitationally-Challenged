@@ -174,7 +174,7 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	
 	# Wall collision prediction for fast movement
 	var space_state = get_world_3d().direct_space_state
-	var prediction_distance = abs(vertical_velocity.y) * state.step * 2  # Look ahead two physics frames
+	var prediction_distance = abs(vertical_velocity.y) * state.step * 5  # Look ahead two physics frames
 	var ray_origin = global_position
 	
 	# Create multiple raycasts in the fall direction to better detect walls
@@ -198,7 +198,7 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 			break
 	
 	# If we're going to hit a wall and moving fast, reduce speed
-	if will_hit_wall and abs(vertical_velocity.y) > MAX_FALL_VELOCITY * 0.2:
+	if will_hit_wall and abs(vertical_velocity.y) > MAX_FALL_VELOCITY * 0.05:
 		vertical_velocity.y /= 5
 	
 	# Regular horizontal movement checks
