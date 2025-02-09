@@ -38,6 +38,7 @@ var is_invulnerable: bool = false
 var invulnerability_timer: float = 0.0
 var initial_mesh_position: Vector3
 
+
 # Movement and visual variables
 var saved_check_point = Vector3(0,0,0)
 var saved_check_point_gravity = GRAVITY_SCALE
@@ -151,7 +152,6 @@ func update_target_mesh_transform(velocity: Vector3) -> void:
 	target_mesh_transform = Transform3D(look_basis, mesh.position) * stretch * flip
 	
 	leg_animator.animate_legs(get_physics_process_delta_time(), speed)
-
 
 func update_mesh_transform(delta: float) -> void:
 	if not is_knocked_down:

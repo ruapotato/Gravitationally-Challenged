@@ -6,6 +6,7 @@ var active_save_num = 1
 var level_keys_list = []
 var config = ConfigFile.new()
 var loaded_level = "hub"
+var clover = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -31,6 +32,9 @@ func load_save_data() -> void:
 		config.set_value("Progress", "completed_levels", level_keys_list)
 		config.save(save_path)
 
+func add_clover(count=1):
+	clover += count
+
 func save_game() -> void:
 	var save_path = "user://save_" + str(active_save_num) + ".cfg"
 	config.set_value("Level", "current_level", loaded_level)
@@ -38,6 +42,7 @@ func save_game() -> void:
 	config.save(save_path)
 
 func load_level(level_name: String) -> void:
+	clover = 0
 	# First, remove any existing children from the load point
 	for child in load_to_point.get_children():
 		child.queue_free()

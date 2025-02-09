@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://5v0415em08vj"]
+[gd_scene load_steps=7 format=3 uid="uid://5v0415em08vj"]
 
 [ext_resource type="Script" path="res://level_bits/level_loader.gd" id="1_fp5wk"]
 [ext_resource type="PackedScene" uid="uid://dhl72ijpyhoyh" path="res://player.tscn" id="1_wnodb"]
+[ext_resource type="PackedScene" uid="uid://daxn46nmxbap2" path="res://2d_interfaces/game_interface.tscn" id="3_vaupo"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_mx2le"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -39,3 +40,5 @@ transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75
 shadow_enabled = true
 
 [node name="loaded_level" type="Node3D" parent="."]
+
+[node name="game_interface" parent="." instance=ExtResource("3_vaupo")]

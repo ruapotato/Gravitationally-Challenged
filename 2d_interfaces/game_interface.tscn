@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://daxn46nmxbap2"]
+
+[ext_resource type="Script" path="res://2d_interfaces/game_interface.gd" id="1_if8wt"]
+
+[node name="game_interface" type="Node2D"]
+script = ExtResource("1_if8wt")
+
+[node name="clover" type="Label" parent="."]
+offset_top = 1057.0
+offset_right = 58.0
+offset_bottom = 1080.0
+text = "Clover: "
+
+[node name="keys" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Keys:"
