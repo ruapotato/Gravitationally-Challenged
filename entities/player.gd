@@ -72,7 +72,7 @@ func _ready() -> void:
 	update_target_mesh_transform(Vector3.FORWARD)
 	
 	if !leg_animator:
-		var leg_anim = preload("res://legs.gd").new()
+		var leg_anim = preload("res://entities/legs.gd").new()
 		leg_anim.name = "LegAnimator"
 		mesh.add_child(leg_anim)
 		leg_animator = leg_anim
