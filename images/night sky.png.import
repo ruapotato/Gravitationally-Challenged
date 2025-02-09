@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dgms15233y3xr"
-path="res://.godot/imported/castle.png-e79cb52cf7b2d1ae828201abe18edafd.ctex"
+uid="uid://b3p71a0d43t1o"
+path="res://.godot/imported/night sky.png-08bc3d3db1445bae946b2689511eed73.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://castle.png"
-dest_files=["res://.godot/imported/castle.png-e79cb52cf7b2d1ae828201abe18edafd.ctex"]
+source_file="res://images/night sky.png"
+dest_files=["res://.godot/imported/night sky.png-08bc3d3db1445bae946b2689511eed73.ctex"]
 
 [params]
 

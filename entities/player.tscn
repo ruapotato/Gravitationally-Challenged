@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://dhl72ijpyhoyh"]
 
 [ext_resource type="PackedScene" uid="uid://ci6dvjpgwuevu" path="res://import/player.glb" id="2_5hcgc"]
-[ext_resource type="Script" path="res://player.gd" id="2_ivawi"]
-[ext_resource type="Script" path="res://legs.gd" id="3_pa33j"]
+[ext_resource type="Script" path="res://entities/player.gd" id="2_ivawi"]
+[ext_resource type="Script" path="res://entities/legs.gd" id="3_pa33j"]
 [ext_resource type="PackedScene" uid="uid://bif4c56lalkna" path="res://weapons/sword.tscn" id="4_4lhy3"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sya21"]
