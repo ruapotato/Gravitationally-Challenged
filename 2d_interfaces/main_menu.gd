@@ -25,10 +25,6 @@ func start_game(save_file) -> void:
 	get_tree().change_scene_to_file("res://level_bits/level_loader.tscn")
 
 
-func _on_close_this_shit_pressed() -> void:
-	get_tree().quit()
-
-
 func _on_play_1_pressed() -> void:
 	start_game(1)
 
@@ -43,3 +39,7 @@ func _on_play_3_pressed() -> void:
 
 func _on_play_4_pressed() -> void:
 	start_game(4)
+
+
+func _on_back_pressed() -> void:
+	get_tree().change_scene_to_file("res://Title.tscn")
