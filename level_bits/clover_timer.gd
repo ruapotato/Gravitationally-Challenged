@@ -2,7 +2,7 @@ extends Node3D
 @onready var start_box = $Area3D
 var level_loader
 var player
-var count_down = 10
+var count_down = 12
 var counting = false
 var started = false  # Track if we've started the sequence
 
