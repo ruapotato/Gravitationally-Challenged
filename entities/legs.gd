@@ -5,7 +5,7 @@ extends Node3D
 
 const LEG_SPEED = 8.0  # Speed of leg swing
 const MAX_ANGLE = PI/10  # Maximum swing angle 
-const LEG_LENGTH = 0.35  # Length of each leg
+const LEG_LENGTH = 0.32  # Length of each leg
 const RESET_SPEED = 5.0  # Speed at which legs return to neutral
 
 var time: float = 0.0
@@ -39,6 +39,7 @@ func find_root(node=get_tree().root) -> Node:
 	return null
 
 
+
 func create_leg_mesh(name: String, offset: float) -> Node3D:
 	# Create a root node for the leg system
 	var root = Node3D.new()
@@ -58,11 +59,40 @@ func create_leg_mesh(name: String, offset: float) -> Node3D:
 	capsule.height = LEG_LENGTH
 	leg.mesh = capsule
 	
-	# Position the leg mesh to hang down from its pivot point
+	# Create an unshaded black material
+	var material = StandardMaterial3D.new()
+	material.shading_mode = StandardMaterial3D.SHADING_MODE_UNSHADED
+	material.albedo_color = Color.BLACK
+	
+	# Apply the material to the leg mesh
+	leg.material_override = material
+	
+	# Position the leg mesh
 	leg.position = Vector3(0, -LEG_LENGTH/2, 0)
 	root.add_child(leg)
+	
+	# Create foot (horizontal part of the L)
+	var foot = MeshInstance3D.new()
+	foot.name = "foot"
+	
+	# Create capsule mesh for foot
+	var foot_capsule = CapsuleMesh.new()
+	foot_capsule.radius = 0.03  # Same as leg
+	foot_capsule.height = 0.15   # Length of foot
+	foot.mesh = foot_capsule
+	
+	# Use same material for foot
+	foot.material_override = material
+	
+	# Position and rotate the foot to make L shape pointing forward
+	foot.position = Vector3(0, -LEG_LENGTH, -0.05)
+	foot.scale = Vector3(1,1,.8)
+	foot.rotation_degrees = Vector3(90, 0, 0)  # Added 180 degrees Y rotation to flip it around
+	root.add_child(foot)
+	
 	return root
-
+	
+	
 func animate_legs(delta: float, speed: float):
 	time += delta * LEG_SPEED * speed
 	
