@@ -8,7 +8,7 @@ extends RigidBody3D
 @onready var sword = $mesh/sword
 
 # Movement constants
-const MOVEMENT_FORCE = 200.0
+const MOVEMENT_FORCE = 222.0
 const MAX_VELOCITY = 3.0
 const MAX_FALL_VELOCITY = 50.0
 const FRICTION_FORCE = 5.0

@@ -20,6 +20,7 @@ func find_root(node=get_tree().root) -> Node:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	rotate_y(delta)
 	if visible:
 		if player in get_overlapping_bodies():
 			level_loader.add_clover()
