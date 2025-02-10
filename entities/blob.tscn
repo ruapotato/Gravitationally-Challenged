@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bkq53i8fkkjf8"]
 
-[ext_resource type="PackedScene" uid="uid://c6bqwcdghnrhp" path="res://import/blob.glb" id="1_1aeha"]
 [ext_resource type="Script" path="res://entities/blob.gd" id="1_eirte"]
+[ext_resource type="PackedScene" uid="uid://bv20rjmvt3f7s" path="res://entities/blob.glb" id="2_h5pwi"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_c6qkn"]
 size = Vector3(0.52, 0.375, 0.315)
@@ -21,7 +21,7 @@ shape = SubResource("BoxShape3D_c6qkn")
 
 [node name="mesh" type="Node3D" parent="."]
 
-[node name="blob2" parent="mesh" instance=ExtResource("1_1aeha")]
+[node name="blob2" parent="mesh" instance=ExtResource("2_h5pwi")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
 [node name="KillArea3D" type="Area3D" parent="."]
