@@ -3,6 +3,8 @@ extends CharacterBody3D
 @onready var vulnerable_zone = $KillArea3D
 @onready var player_hurt_zone = $biteArea3D
 @onready var mesh = $mesh
+@onready var walk_sound = $walk_sound
+@onready var die_sound = $die_sound
 
 const PATROL_SPEED = 2.0
 const CHASE_SPEED = 3.0
@@ -83,6 +85,8 @@ func find_root(node=get_tree().root) -> Node:
 	return null
 
 func start_death_sequence():
+	die_sound.play()
+	walk_sound.stop()
 	is_dying = true
 	death_timer = 0.0
 	set_collision_layer_value(1, false)
@@ -181,3 +185,7 @@ func _physics_process(delta: float) -> void:
 				flip_patrol_direction()
 	
 	update_squish_animation(delta)
+
+
+func _on_walk_sound_finished() -> void:
+	walk_sound.play()

@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://bif4c56lalkna"]
+[gd_scene load_steps=7 format=3 uid="uid://bif4c56lalkna"]
 
 [ext_resource type="Script" path="res://weapons/sword.gd" id="1_0ll7p"]
+[ext_resource type="AudioStream" uid="uid://cyfkojsywoyr2" path="res://audio/sword.wav" id="2_ca0c4"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_5hnmv"]
 size = Vector3(0.84, 0.225, 0.27)
@@ -33,3 +34,7 @@ mesh = SubResource("PrismMesh_tu3kn")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D2/Cutting Edge"]
 shape = SubResource("SphereShape3D_tra24")
+
+[node name="swoosh" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.863048, 0)
+stream = ExtResource("2_ca0c4")

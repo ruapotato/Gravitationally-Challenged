@@ -1,5 +1,7 @@
 extends Node3D
 @onready var start_box = $Area3D
+@onready var timer_sound = $timer_sound
+
 var level_loader
 var player
 var count_down = 12
@@ -34,19 +36,21 @@ func _process(delta: float) -> void:
 
 func start() -> void:
 	print("Clover time!!!")
+	timer_sound.play()
 	counting = true
 	started = true  # Mark that we've started the sequence
 	count_down = 7  # Reset the countdown
 	# Make all child objects visible
 	for child in get_children():
-		child.visible = true
+		if child != start_box and child != timer_sound:
+			child.visible = true
 
 func end() -> void:
 	print("Clover time end!")
 	counting = false
 	# Make all child objects invisible except mesh
 	for child in get_children():
-		if child != start_box:
+		if child != start_box and child != timer_sound:
 			child.visible = false
 
 func _on_area_3d_body_entered(body: Node3D) -> void:

@@ -1,6 +1,8 @@
 extends Node3D
 
 @onready var cutt_edge = $"MeshInstance3D2/Cutting Edge"
+@onready var swoosh_sound = $swoosh
+
 
 const SWORD_ANGLE = 60  # Angle to point sword outward
 const SWIPE_ANGLES = [140, 0, 360]  # Counter-clockwise, clockwise, full spin
@@ -75,6 +77,7 @@ func swipe() -> void:
 		input_received = true
 	
 func start_swipe() -> void:
+	swoosh_sound.play()
 	is_animating = true
 	animation_time = 0.0
 	input_received = false  # Reset input flag for new swipe

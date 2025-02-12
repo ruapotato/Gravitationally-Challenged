@@ -1,10 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://bej60nbr21nhf"]
+[gd_scene load_steps=10 format=3 uid="uid://bej60nbr21nhf"]
 
 [ext_resource type="PackedScene" uid="uid://ci6dvjpgwuevu" path="res://import/player.glb" id="2_5hcgc"]
 [ext_resource type="Script" path="res://entities/player.gd" id="2_ivawi"]
 [ext_resource type="Material" uid="uid://5by4njtaogfn" path="res://native/player.tres" id="3_0dd4x"]
 [ext_resource type="Script" path="res://entities/legs.gd" id="3_pa33j"]
 [ext_resource type="PackedScene" uid="uid://bif4c56lalkna" path="res://weapons/sword.tscn" id="4_4lhy3"]
+[ext_resource type="AudioStream" uid="uid://h0t44k24ssa4" path="res://audio/player_die.wav" id="6_6xmlh"]
+[ext_resource type="AudioStream" uid="uid://c70jue3ppwvra" path="res://audio/flip.wav" id="7_v8a6e"]
+[ext_resource type="AudioStream" uid="uid://u5l0i52gkx7k" path="res://audio/checkpoint.wav" id="8_f77jv"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sya21"]
 margin = 0.0
@@ -52,5 +55,22 @@ script = ExtResource("3_pa33j")
 
 [node name="sword" parent="mesh" instance=ExtResource("4_4lhy3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0162662, -0.00556868, 0)
+
+[node name="AudioListener3D" type="AudioListener3D" parent="mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.506041, 0)
+current = true
+
+[node name="player_sounds" type="Node3D" parent="mesh"]
+
+[node name="die" type="AudioStreamPlayer3D" parent="mesh/player_sounds"]
+stream = ExtResource("6_6xmlh")
+
+[node name="flip" type="AudioStreamPlayer3D" parent="mesh/player_sounds"]
+stream = ExtResource("7_v8a6e")
+max_db = -15.0
+
+[node name="check_point_sound" type="AudioStreamPlayer3D" parent="mesh/player_sounds"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.270659, 0)
+stream = ExtResource("8_f77jv")
 
 [editable path="mesh"]

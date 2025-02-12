@@ -2,11 +2,13 @@ extends Node3D
 
 @onready var left_leg = null
 @onready var right_leg = null
+@onready var sound_on_foot_hit = preload("res://audio/player_toe_tip.wav")
 
 const LEG_SPEED = 8.0  # Speed of leg swing
 const MAX_ANGLE = PI/10  # Maximum swing angle 
 const LEG_LENGTH = 0.32  # Length of each leg
 const RESET_SPEED = 5.0  # Speed at which legs return to neutral
+const SOUND_THRESHOLD = 0.95  # Threshold for playing sound (95% of max angle)
 
 var time: float = 0.0
 var current_speed: float = 0.0
@@ -15,6 +17,12 @@ var target_rotation = Vector3.ZERO
 var level_loader
 var player
 var cam_arm
+
+# Track previous angles for sound triggering
+var prev_left_angle: float = 0.0
+var prev_right_angle: float = 0.0
+var sound_cooldown: float = 0.0
+const SOUND_COOLDOWN_TIME: float = 0.1  # Prevent sound spam
 
 func _ready():
 	level_loader = find_root()
@@ -37,8 +45,6 @@ func find_root(node=get_tree().root) -> Node:
 		if found:
 			return found
 	return null
-
-
 
 func create_leg_mesh(name: String, offset: float) -> Node3D:
 	# Create a root node for the leg system
@@ -87,13 +93,45 @@ func create_leg_mesh(name: String, offset: float) -> Node3D:
 	# Position and rotate the foot to make L shape pointing forward
 	foot.position = Vector3(0, -LEG_LENGTH, -0.05)
 	foot.scale = Vector3(1,1,.8)
-	foot.rotation_degrees = Vector3(90, 0, 0)  # Added 180 degrees Y rotation to flip it around
+	foot.rotation_degrees = Vector3(90, 0, 0)
 	root.add_child(foot)
 	
+	# Add audio player directly to the leg root for easier access
+	var audio_player = AudioStreamPlayer3D.new()
+	audio_player.name = name + "_audio"  # Unique name for each leg's audio
+	audio_player.stream = sound_on_foot_hit
+	audio_player.unit_size = 3.0
+	audio_player.max_distance = 10.0
+	audio_player.max_db = -10
+	# Position the audio player at the foot's position
+	audio_player.position = Vector3(0, -LEG_LENGTH, -0.05)
+	root.add_child(audio_player)
+	
 	return root
+
+func play_foot_sound(leg_node: Node3D):
+	if sound_cooldown <= 0:
+		var audio_player = leg_node.get_node(leg_node.name + "_audio")
+		if audio_player and !audio_player.playing:
+			print("Playing sound for " + leg_node.name)
+			audio_player.play()
+			sound_cooldown = SOUND_COOLDOWN_TIME
+
+func check_leg_extremes(current_angle: float, prev_angle: float) -> bool:
+	# Check if the leg has reached an extreme position (fully up or down)
+	var max_threshold = MAX_ANGLE * SOUND_THRESHOLD
+	var min_threshold = -MAX_ANGLE * SOUND_THRESHOLD
 	
+	# Check if we've crossed either the upper or lower threshold
+	var crossed_upper = prev_angle < max_threshold and current_angle >= max_threshold
+	var crossed_lower = prev_angle > min_threshold and current_angle <= min_threshold
 	
+	return crossed_upper or crossed_lower
+
 func animate_legs(delta: float, speed: float):
+	# Update sound cooldown
+	sound_cooldown = max(0, sound_cooldown - delta)
+	
 	time += delta * LEG_SPEED * speed
 	
 	# Smoothly adjust animation speed based on movement speed
@@ -115,14 +153,27 @@ func animate_legs(delta: float, speed: float):
 		var rotation_multiplier = -1.0 if gravity_inverted else 1.0
 		left_leg.rotation = Vector3(left_angle * rotation_multiplier, 0, 0)
 		right_leg.rotation = Vector3(right_angle * rotation_multiplier, 0, 0)
+		
+		# Check each leg separately for sound triggering
+		if check_leg_extremes(left_angle, prev_left_angle):
+			play_foot_sound(left_leg)
+		if check_leg_extremes(right_angle, prev_right_angle):
+			play_foot_sound(right_leg)
+		
+		# Update previous angles
+		prev_left_angle = left_angle
+		prev_right_angle = right_angle
+		
 	else:
 		# Return legs to neutral position when not moving
 		# Use exponential interpolation for smoother transition
 		left_leg.rotation = left_leg.rotation.lerp(Vector3.ZERO, delta * RESET_SPEED)
 		right_leg.rotation = right_leg.rotation.lerp(Vector3.ZERO, delta * RESET_SPEED)
 		
-		# Reset the time when stopped to ensure animations start from a consistent position
+		# Reset the time and previous angles when stopped
 		time = 0.0
+		prev_left_angle = 0.0
+		prev_right_angle = 0.0
 
 func flip_gravity():
 	gravity_inverted = !gravity_inverted

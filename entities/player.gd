@@ -6,6 +6,9 @@ extends RigidBody3D
 @onready var mesh = $mesh
 @onready var leg_animator = $mesh/LegAnimator
 @onready var sword = $mesh/sword
+@onready var die_sound = $mesh/player_sounds/die
+@onready var flip_sound = $mesh/player_sounds/flip
+@onready var check_point_sound = $mesh/player_sounds/check_point_sound
 
 # Movement constants
 const MOVEMENT_FORCE = 222.0
@@ -80,6 +83,7 @@ func _ready() -> void:
 
 func start_knockdown() -> void:
 	if not is_knocked_down and not is_invulnerable:
+		die_sound.play()
 		is_knocked_down = true
 		action_state = ActionState.KNOCKDOWN
 		knockdown_timer = 0.0
@@ -111,6 +115,7 @@ func process_knockdown(delta: float) -> void:
 			load_check_point()
 
 func start_invulnerability() -> void:
+	check_point_sound.play()
 	is_invulnerable = true
 	invulnerability_timer = 0.0
 
@@ -246,6 +251,7 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	update_mesh_transform(state.step)
 
 func flip_gravity() -> void:
+	flip_sound.play()
 	gravity_inverted = !gravity_inverted
 	gravity_scale = -gravity_scale
 	update_target_mesh_transform(last_movement_direction)
@@ -258,6 +264,7 @@ func load_check_point():
 
 func save_check_point(to_this_point):
 	if to_this_point != saved_check_point:
+		check_point_sound.play()
 		saved_check_point = to_this_point
 		saved_check_point_gravity = gravity_scale
 
