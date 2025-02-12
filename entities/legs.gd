@@ -6,7 +6,7 @@ extends Node3D
 
 const LEG_SPEED = 8.0  # Speed of leg swing
 const MAX_ANGLE = PI/10  # Maximum swing angle 
-const LEG_LENGTH = 0.32  # Length of each leg
+const LEG_LENGTH = 0.4  # Length of each leg
 const RESET_SPEED = 5.0  # Speed at which legs return to neutral
 const SOUND_THRESHOLD = 0.95  # Threshold for playing sound (95% of max angle)
 

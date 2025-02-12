@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://bej60nbr21nhf"]
 
-[ext_resource type="PackedScene" uid="uid://ci6dvjpgwuevu" path="res://import/player.glb" id="2_5hcgc"]
 [ext_resource type="Script" path="res://entities/player.gd" id="2_ivawi"]
+[ext_resource type="PackedScene" uid="uid://cea6mpd4nqc38" path="res://import/player2.glb" id="2_tbhwb"]
 [ext_resource type="Material" uid="uid://5by4njtaogfn" path="res://native/player.tres" id="3_0dd4x"]
 [ext_resource type="Script" path="res://entities/legs.gd" id="3_pa33j"]
 [ext_resource type="PackedScene" uid="uid://bif4c56lalkna" path="res://weapons/sword.tscn" id="4_4lhy3"]
@@ -43,14 +43,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.120642, 0.871933, 0.088572
 [node name="bot_right" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.105191, 0.871933, 0.0914997)
 
-[node name="mesh" parent="." instance=ExtResource("2_5hcgc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.432527, 0)
+[node name="mesh" parent="." instance=ExtResource("2_tbhwb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.367852, -0.0646426)
 
-[node name="Plane" parent="mesh" index="0"]
+[node name="cape" parent="mesh" index="0"]
 surface_material_override/0 = ExtResource("3_0dd4x")
 
 [node name="LegAnimator" type="Node3D" parent="mesh"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.326193, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.172028, 0)
 script = ExtResource("3_pa33j")
 
 [node name="sword" parent="mesh" instance=ExtResource("4_4lhy3")]
