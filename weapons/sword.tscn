@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://bif4c56lalkna"]
+[gd_scene load_steps=8 format=3 uid="uid://bif4c56lalkna"]
 
 [ext_resource type="Script" path="res://weapons/sword.gd" id="1_0ll7p"]
 [ext_resource type="AudioStream" uid="uid://cyfkojsywoyr2" path="res://audio/sword.wav" id="2_ca0c4"]
+[ext_resource type="PackedScene" uid="uid://dok1553mkwna3" path="res://import/sword.glb" id="3_uqfsh"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_5hnmv"]
 size = Vector3(0.84, 0.225, 0.27)
@@ -20,14 +21,17 @@ script = ExtResource("1_0ll7p")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(6.84757e-09, 0.0687001, 0.148632, 2.81593e-09, -0.16706, 0.0611221, 0.169383, 1.91254e-23, -7.02481e-09, 0.305602, -0.166896, 0)
+visible = false
 mesh = SubResource("BoxMesh_5hnmv")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
 transform = Transform3D(6.84757e-09, 0.0687001, 0.148632, 2.81593e-09, -0.16706, 0.0611221, 0.169383, 1.91254e-23, -7.02481e-09, 0.290145, -0.129307, 0)
+visible = false
 mesh = SubResource("BoxMesh_e8t01")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
 transform = Transform3D(-0.148632, 0.0687001, 8.88178e-16, -0.0611221, -0.16706, 0, 0, -3.00884e-16, 0.169383, 0.406979, -0.417175, -1.39472e-15)
+visible = false
 mesh = SubResource("PrismMesh_tu3kn")
 
 [node name="Cutting Edge" type="Area3D" parent="MeshInstance3D2"]
@@ -38,3 +42,6 @@ shape = SubResource("SphereShape3D_tra24")
 [node name="swoosh" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.863048, 0)
 stream = ExtResource("2_ca0c4")
+
+[node name="sword2" parent="." instance=ExtResource("3_uqfsh")]
+transform = Transform3D(-4.26839e-08, -0.308269, 0.40731, -1.90963e-08, 0.75445, 0.166428, -1.155, -1.08145e-09, -1.78041e-08, 0.391, -0.386, 0)

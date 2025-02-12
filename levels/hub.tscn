@@ -1,6 +1,7 @@
-[gd_scene load_steps=25 format=3 uid="uid://d2k4sjk2nqlkk"]
+[gd_scene load_steps=26 format=3 uid="uid://d2k4sjk2nqlkk"]
 
 [ext_resource type="PackedScene" uid="uid://b14ncbldqwsxv" path="res://levels/castle.glb" id="3_gjbl0"]
+[ext_resource type="Material" uid="uid://dmqmxlsyb7nhe" path="res://native/stone_wall.tres" id="4_yln0x"]
 [ext_resource type="PackedScene" uid="uid://8u2c5gi5txf8" path="res://level_bits/level_portal.tscn" id="6_akp7g"]
 [ext_resource type="PackedScene" uid="uid://bsl58gebtwki8" path="res://level_bits/key.tscn" id="8_5v4ox"]
 
@@ -71,13 +72,19 @@ data = PackedVector3Array(-1.0466, 34.7295, 0.3954, -0.9863, 34.8234, 0.4703, -0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.111833, -0.249361, 5.4155)
 
 [node name="level_portal_level1" parent="." instance=ExtResource("6_akp7g")]
-transform = Transform3D(0.00698127, 0, 0.999976, 0, 1, 0, -0.999976, 0, 0.00698127, -1.05968, 12.1008, 4.2452)
+transform = Transform3D(0.00698127, 0, 0.999976, 0, 1, 0, -0.999976, 0, 0.00698127, -1.05968, 16.6017, -0.063983)
+
+[node name="level_portal_introlevel" parent="." instance=ExtResource("6_akp7g")]
+transform = Transform3D(-0.995905, 0, 0.0904066, 0, 1, 0, -0.0904066, 0, -0.995905, 0.111496, 1.3114, -4.39309)
+
+[node name="level_portal_level2" parent="." instance=ExtResource("6_akp7g")]
+transform = Transform3D(0.698503, 0, 0.715608, 0, 1, 0, -0.715608, 0, 0.698503, 4.20764, 9.09704, -3.98885)
 
 [node name="level_portal_level3" parent="." instance=ExtResource("6_akp7g")]
-transform = Transform3D(0.72275, 0, 0.69111, 0, 1, 0, -0.69111, 0, 0.72275, 3.19098, 6.22315, 1.17697)
+transform = Transform3D(0.0223728, 0, 0.99975, 0, 1, 0, -0.99975, 0, 0.0223728, -15.5209, 16.7025, -0.180713)
 
 [node name="key" parent="." instance=ExtResource("8_5v4ox")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.62408, 18.258, 4.28145)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.62408, 20.6753, 0.0903893)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 
@@ -145,5 +152,32 @@ shape = SubResource("ConcavePolygonShape3D_cgmrw")
 shape = SubResource("ConcavePolygonShape3D_ei4vn")
 
 [node name="castle2" parent="." instance=ExtResource("3_gjbl0")]
+
+[node name="castle" parent="castle2" index="0"]
+material_override = ExtResource("4_yln0x")
+
+[node name="PCplatform" parent="castle2" index="1"]
+material_override = ExtResource("4_yln0x")
+
+[node name="PC" parent="castle2" index="2"]
+material_override = ExtResource("4_yln0x")
+
+[node name="platform2" parent="castle2" index="4"]
+material_override = ExtResource("4_yln0x")
+
+[node name="platform3" parent="castle2" index="5"]
+material_override = ExtResource("4_yln0x")
+
+[node name="smooth_stairs2" parent="castle2" index="7"]
+material_override = ExtResource("4_yln0x")
+
+[node name="smooth_stairs3" parent="castle2" index="8"]
+material_override = ExtResource("4_yln0x")
+
+[node name="PChall" parent="castle2" index="9"]
+material_override = ExtResource("4_yln0x")
+
+[node name="smooth_stairs" parent="castle2" index="10"]
+material_override = ExtResource("4_yln0x")
 
 [editable path="castle2"]
