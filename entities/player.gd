@@ -9,11 +9,12 @@ extends RigidBody3D
 @onready var die_sound = $mesh/player_sounds/die
 @onready var flip_sound = $mesh/player_sounds/flip
 @onready var check_point_sound = $mesh/player_sounds/check_point_sound
+@onready var collision_shape = $CollisionShape3D
 
 # Movement constants
 const MOVEMENT_FORCE = 222.0
 const MAX_VELOCITY = 3.0
-const MAX_FALL_VELOCITY = 50.0
+const MAX_FALL_VELOCITY = 22.0
 const FRICTION_FORCE = 5.0
 const CAMERA_LERP_SPEED = 0.1
 const MIN_ZOOM = 1.0
@@ -210,7 +211,11 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	# If collision detected, handle it
 	if closest_collision_point != null:
 		# Move slightly back from collision point to prevent clipping
-		var safe_position = closest_collision_point - (vertical_velocity.normalized() * 0.01)
+		var safe_position = closest_collision_point
+		if gravity_inverted:
+			safe_position.y -= float(collision_shape.shape.height)/1.4
+		else:
+			safe_position.y += float(collision_shape.shape.height)/1.4
 		state.transform.origin = safe_position
 		vertical_velocity = Vector3.ZERO
 	

@@ -1,38 +1,32 @@
 [gd_scene load_steps=6 format=3 uid="uid://cstyfyemvu5hs"]
 
 [ext_resource type="Script" path="res://level_bits/spikes.gd" id="1_ayig4"]
+[ext_resource type="PackedScene" uid="uid://me6ffwwen8ha" path="res://import/spikes.glb" id="2_tk012"]
+[ext_resource type="Material" uid="uid://dmqmxlsyb7nhe" path="res://native/stone_wall.tres" id="3_08bse"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_8l7et"]
-size = Vector3(0.8, 0.541, 0.8)
+[sub_resource type="BoxShape3D" id="BoxShape3D_v4mwh"]
+size = Vector3(0.8, 0.79, 0.8)
 
-[sub_resource type="BoxMesh" id="BoxMesh_86agv"]
-size = Vector3(1, 0.185, 1)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_cqq3f"]
-top_radius = 0.0
-bottom_radius = 0.475
-height = 0.81
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_ahmt3"]
-size = Vector3(1.045, 0.2, 1.08)
+[sub_resource type="BoxShape3D" id="BoxShape3D_tomiu"]
+size = Vector3(1, 0.175, 1)
 
 [node name="spikes_small" type="Area3D"]
 script = ExtResource("1_ayig4")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.159424, 0)
-shape = SubResource("BoxShape3D_8l7et")
+[node name="die" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.114499, 0)
+shape = SubResource("BoxShape3D_v4mwh")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.344724, 0)
-mesh = SubResource("BoxMesh_86agv")
+[node name="spikes2" parent="." instance=ExtResource("2_tk012")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.45289, 0)
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.160125, 0)
-mesh = SubResource("CylinderMesh_cqq3f")
+[node name="StaticBody3D" type="StaticBody3D" parent="spikes2"]
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="spikes2/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0998077, 0)
+shape = SubResource("BoxShape3D_tomiu")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.435059, 0)
-shape = SubResource("BoxShape3D_ahmt3")
+[node name="Cube" parent="spikes2" index="7"]
+surface_material_override/0 = ExtResource("3_08bse")
+
+[editable path="spikes2"]
