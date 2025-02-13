@@ -4,7 +4,7 @@ extends Node3D
 @onready var right_leg = null
 @onready var sound_on_foot_hit = preload("res://audio/player_toe_tip.wav")
 
-const LEG_SPEED = 8.0  # Speed of leg swing
+const LEG_SPEED = 25.0  # Speed of leg swing
 const MAX_ANGLE = PI/10  # Maximum swing angle 
 const LEG_LENGTH = 0.4  # Length of each leg
 const RESET_SPEED = 5.0  # Speed at which legs return to neutral
@@ -113,7 +113,6 @@ func play_foot_sound(leg_node: Node3D):
 	if sound_cooldown <= 0:
 		var audio_player = leg_node.get_node(leg_node.name + "_audio")
 		if audio_player and !audio_player.playing:
-			print("Playing sound for " + leg_node.name)
 			audio_player.play()
 			sound_cooldown = SOUND_COOLDOWN_TIME
 

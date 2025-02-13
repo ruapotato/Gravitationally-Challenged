@@ -12,7 +12,7 @@ extends RigidBody3D
 @onready var collision_shape = $CollisionShape3D
 
 # Movement constants
-const MOVEMENT_FORCE = 222.0
+const MOVEMENT_FORCE = 450.0
 const MAX_VELOCITY = 3.0
 const MAX_FALL_VELOCITY = 22.0
 const FRICTION_FORCE = 5.0
@@ -28,7 +28,11 @@ const STRETCH_SPEED = 8.0
 const KNOCKDOWN_DURATION = 3.0
 const KNOCKDOWN_ROTATION_SPEED = 5.0
 const INVULNERABILITY_DURATION = 3.0
-const MESH_HEIGHT = 0.5
+
+const ACCELERATION_TIME = 1.5  # Time to reach max speed
+const INITIAL_MOVEMENT_FORCE = 70.0  # Starting force
+const MAX_MOVEMENT_FORCE = 450.0  # Maximum force (original MOVEMENT_FORCE value)
+
 
 # State handling
 enum ActionState {IDLE, WALK, KNOCKDOWN}
@@ -41,7 +45,10 @@ var target_knockdown_rotation: Vector3
 var is_invulnerable: bool = false
 var invulnerability_timer: float = 0.0
 var initial_mesh_position: Vector3
-
+var current_movement_force = INITIAL_MOVEMENT_FORCE
+var is_accelerating = false
+var acceleration_timer = 0.0
+var mesh_height
 
 # Movement and visual variables
 var saved_check_point = Vector3(0,0,0)
@@ -63,6 +70,8 @@ func _ready() -> void:
 	angular_damp = 0.0
 	can_sleep = false
 	gravity_scale = GRAVITY_SCALE
+	mesh_height = collision_shape.shape.height
+	
 	
 	base_mesh_scale = mesh.scale
 	initial_mesh_position = mesh.position
@@ -104,7 +113,7 @@ func process_knockdown(delta: float) -> void:
 			var progress = min(knockdown_timer / 0.5, 1.0)
 			mesh.rotation = initial_knockdown_rotation.lerp(target_knockdown_rotation, ease(progress, delta))
 			
-			var height_adjustment = Vector3(0, -MESH_HEIGHT if not gravity_inverted else MESH_HEIGHT, 0)
+			var height_adjustment = Vector3(0, -mesh_height if not gravity_inverted else mesh_height, 0)
 			mesh.position = initial_mesh_position.lerp(initial_mesh_position + height_adjustment, ease(progress, delta))
 		else:
 			is_knocked_down = false
@@ -163,6 +172,7 @@ func update_mesh_transform(delta: float) -> void:
 	if not is_knocked_down:
 		mesh.transform = mesh.transform.interpolate_with(target_mesh_transform, delta * ROTATION_SPEED)
 
+
 func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	if is_knocked_down:
 		return
@@ -176,6 +186,23 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	var input_dir = Input.get_vector("left", "right", "up", "down") 
 	var direction = Vector3(input_dir.x, 0, input_dir.y).normalized()
 	direction = direction.rotated(Vector3.UP, cam_piv.rotation.y)
+	
+	# Handle acceleration
+	if direction:
+		if !is_accelerating:
+			is_accelerating = true
+			acceleration_timer = 0.0
+			current_movement_force = INITIAL_MOVEMENT_FORCE
+		else:
+			acceleration_timer += state.step
+			var t = min(acceleration_timer / ACCELERATION_TIME, 1.0)
+			# Use ease_in interpolation for smoother acceleration
+			t = ease(t, 2.0)  # You can adjust the ease value for different acceleration curves
+			current_movement_force = lerp(INITIAL_MOVEMENT_FORCE, MAX_MOVEMENT_FORCE, t)
+	else:
+		is_accelerating = false
+		acceleration_timer = 0.0
+		current_movement_force = INITIAL_MOVEMENT_FORCE
 	
 	# Wall collision prediction for next physics frame
 	var space_state = get_world_3d().direct_space_state
@@ -213,9 +240,9 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 		# Move slightly back from collision point to prevent clipping
 		var safe_position = closest_collision_point
 		if gravity_inverted:
-			safe_position.y -= float(collision_shape.shape.height)/1.4
+			safe_position.y -= mesh_height/1.4
 		else:
-			safe_position.y += float(collision_shape.shape.height)/1.4
+			safe_position.y += mesh_height/1.4
 		state.transform.origin = safe_position
 		vertical_velocity = Vector3.ZERO
 	
@@ -230,9 +257,9 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 		if !movement_collision:
 			if action_state == ActionState.IDLE:
 				action_state = ActionState.WALK
-			state.apply_central_force(direction * MOVEMENT_FORCE)
+			# Apply force with current acceleration
+			state.apply_central_force(direction * current_movement_force)
 		else:
-			# Stop at collision point for horizontal movement
 			var safe_position = movement_collision.position - (direction * 0.01)
 			horizontal_velocity = Vector3.ZERO
 			if action_state == ActionState.WALK:
@@ -240,9 +267,8 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	else:
 		if action_state == ActionState.WALK:
 			action_state = ActionState.IDLE
-	
-	if !direction:
-		horizontal_velocity *= (1.0 - state.step * 1.5)
+		# Instant stop when no input
+		horizontal_velocity = Vector3.ZERO
 	
 	if horizontal_velocity.length() > MAX_VELOCITY:
 		horizontal_velocity = horizontal_velocity.normalized() * MAX_VELOCITY
@@ -254,8 +280,9 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	
 	update_target_mesh_transform(horizontal_velocity)
 	update_mesh_transform(state.step)
-
+	
 func flip_gravity() -> void:
+	linear_velocity.y = 0
 	flip_sound.play()
 	gravity_inverted = !gravity_inverted
 	gravity_scale = -gravity_scale
