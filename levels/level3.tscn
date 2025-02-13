@@ -75,7 +75,7 @@ transform = Transform3D(0.78604, 0, 0.618175, 0, 1, 0, -0.618175, 0, 0.78604, 11
 [node name="ground_large4" parent="." instance=ExtResource("3_srdlq")]
 transform = Transform3D(0.78604, 0, 0.618175, 0, 1, 0, -0.618175, 0, 0.78604, 3.43193, -135.846, 10.677)
 
-[node name="key" parent="." instance=ExtResource("4_q8msd")]
+[node name="level3_key1" parent="." instance=ExtResource("4_q8msd")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.0351, -307.033, -11.6559)
 
 [node name="spike_whole" parent="." instance=ExtResource("5_7slhx")]

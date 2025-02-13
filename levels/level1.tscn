@@ -3142,7 +3142,7 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9.510
 [node name="blob3" parent="badies" instance=ExtResource("5_ayo8m")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.09539, -0.981516, 6.70382)
 
-[node name="key" parent="." instance=ExtResource("6_h2npj")]
+[node name="level1_key1" parent="." instance=ExtResource("6_h2npj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.4359, 7.46045, 21.6474)
 
 [node name="clover_set_1" type="Node3D" parent="."]
@@ -3266,3 +3266,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.102125, 0.332661, -6.07666)
 
 [node name="clover_x20" parent="clover_timer_set/clover_timer" instance=ExtResource("9_iesfu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.102125, 0.332661, -4.07666)
+
+[node name="clover_timer_set2" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.88373, 6.55374, 18.6088)
+
+[node name="clover_timer" parent="clover_timer_set2" instance=ExtResource("8_cf0u7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.298847, 0)
+
+[node name="clover_x5" parent="clover_timer_set2/clover_timer" instance=ExtResource("9_iesfu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.102126, 0.332661, -1.25554)
+
+[node name="clover_x6" parent="clover_timer_set2/clover_timer" instance=ExtResource("9_iesfu")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -2.04934, 0.332661, -4.08594)
+
+[node name="clover_x7" parent="clover_timer_set2/clover_timer" instance=ExtResource("9_iesfu")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.0276184, 3.99561, -2.88643)
+
+[node name="clover_x8" parent="clover_timer_set2/clover_timer" instance=ExtResource("9_iesfu")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.0544295, 3.99561, -4.09957)

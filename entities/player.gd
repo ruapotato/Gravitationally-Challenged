@@ -14,7 +14,7 @@ extends RigidBody3D
 # Movement constants
 const MOVEMENT_FORCE = 250.0
 const MAX_VELOCITY = 3.0
-const MAX_FALL_VELOCITY = 22.0
+const MAX_FALL_VELOCITY = 15.0
 const FRICTION_FORCE = 5.0
 const CAMERA_LERP_SPEED = 0.1
 const MIN_ZOOM = 1.0

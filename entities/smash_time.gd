@@ -1,6 +1,5 @@
 extends Area3D
 
-
 var level_loader
 var player
 
@@ -18,8 +17,3 @@ func find_root(node=get_tree().root) -> Node:
 		if found:
 			return found
 	return null
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	if player in get_overlapping_bodies():
-		level_loader.beat_level(name)

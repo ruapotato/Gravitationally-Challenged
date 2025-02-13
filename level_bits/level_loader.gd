@@ -2,6 +2,7 @@ extends Node3D
 @onready var load_to_point = $loaded_level
 @onready var player = $player
 @onready var pause_menu = $pause_menu
+@onready var key_scene = preload("res://level_bits/key.tscn")
 
 var init_save_location = "hub"
 var active_save_num = 1
@@ -9,6 +10,7 @@ var level_keys_list = []
 var config = ConfigFile.new()
 var loaded_level = "hub"
 var clover = 0
+var clover_key_given = false
 var paused = false
 
 # Called when the node enters the scene tree for the first time.
@@ -60,6 +62,7 @@ func show_menu():
 
 func load_level(level_name: String) -> void:
 	clover = 0
+	clover_key_given = false
 	# First, remove any existing children from the load point
 	for child in load_to_point.get_children():
 		child.queue_free()
@@ -85,15 +88,30 @@ func load_level(level_name: String) -> void:
 	if player.gravity_scale < 0:
 		player.flip_gravity()
 
-func beat_level() -> void:
-	if not level_keys_list.has(loaded_level):
-		level_keys_list.append(loaded_level)
+func beat_level(key_name) -> void:
+	if not level_keys_list.has(key_name):
+		level_keys_list.append(key_name)
 		save_game()
 	load_level("hub")
 
 func get_key_count() -> int:
 	return level_keys_list.size()
 
+func spawn_clover_key():
+	var spawn_location = player.global_position
+	if player.gravity_scale > 0:
+		spawn_location.y += 2
+	else:
+		spawn_location.y -= 1
+	
+	var new_key = key_scene.instantiate()
+	new_key.name = loaded_level + "_coverkey"
+	load_to_point.add_child(new_key)
+	new_key.global_position = spawn_location
+	
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	if not clover_key_given and clover >= 100:
+		clover_key_given = true
+		spawn_clover_key()

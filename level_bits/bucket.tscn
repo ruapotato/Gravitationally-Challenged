@@ -1,4 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://bk4crbtc3ibeq"]
+[gd_scene load_steps=7 format=3 uid="uid://bk4crbtc3ibeq"]
+
+[ext_resource type="Material" uid="uid://dmqmxlsyb7nhe" path="res://native/stone_wall.tres" id="1_40nqj"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_k7xob"]
 
@@ -26,6 +28,7 @@ physics_material_override = SubResource("PhysicsMaterial_k7xob")
 shape = SubResource("BoxShape3D_clwwf")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Floor2"]
+material_override = ExtResource("1_40nqj")
 mesh = SubResource("BoxMesh_nqtwl")
 
 [node name="wall" type="StaticBody3D" parent="."]
@@ -36,6 +39,7 @@ physics_material_override = SubResource("PhysicsMaterial_k7xob")
 shape = SubResource("BoxShape3D_t24j4")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="wall"]
+material_override = ExtResource("1_40nqj")
 mesh = SubResource("BoxMesh_y22mo")
 
 [node name="wall2" type="StaticBody3D" parent="."]
@@ -46,6 +50,7 @@ physics_material_override = SubResource("PhysicsMaterial_k7xob")
 shape = SubResource("BoxShape3D_t24j4")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="wall2"]
+material_override = ExtResource("1_40nqj")
 mesh = SubResource("BoxMesh_y22mo")
 
 [node name="wall3" type="StaticBody3D" parent="."]
@@ -56,6 +61,7 @@ physics_material_override = SubResource("PhysicsMaterial_k7xob")
 shape = SubResource("BoxShape3D_t24j4")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="wall3"]
+material_override = ExtResource("1_40nqj")
 mesh = SubResource("BoxMesh_y22mo")
 
 [node name="wall4" type="StaticBody3D" parent="."]
@@ -66,4 +72,5 @@ physics_material_override = SubResource("PhysicsMaterial_k7xob")
 shape = SubResource("BoxShape3D_t24j4")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="wall4"]
+material_override = ExtResource("1_40nqj")
 mesh = SubResource("BoxMesh_y22mo")

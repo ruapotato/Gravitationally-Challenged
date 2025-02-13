@@ -5,13 +5,13 @@ extends Node2D
 
 var level_loader
 var player
-
 var keys = 0
 var clover = 0
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	level_loader = find_root()
 	player = level_loader.find_child("player")
+
 
 
 func find_root(node=get_tree().root) -> Node:
@@ -27,13 +27,13 @@ func find_root(node=get_tree().root) -> Node:
 func update_keys():
 	if keys != level_loader.get_key_count():
 		keys = level_loader.get_key_count()
-		key_lable.text = "Keys: " + str(keys)
+		key_lable.text = str(keys)
 
 
 func update_clover():
 	if clover != level_loader.clover:
 		clover = level_loader.clover
-		clover_lable.text = "Clover: " + str(clover)
+		clover_lable.text = str(clover)
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
