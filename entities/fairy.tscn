@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://cp3tfcsdvqea1"]
+
+[ext_resource type="Script" path="res://entities/fairy.gd" id="1_im6y1"]
+[ext_resource type="Material" uid="uid://bkceyuh7ilayc" path="res://native/fairy.tres" id="2_b32l1"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_q75en"]
+radius = 0.1
+height = 0.2
+
+[node name="fairy" type="Node3D"]
+script = ExtResource("1_im6y1")
+
+[node name="mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_q75en")
+surface_material_override/0 = ExtResource("2_b32l1")

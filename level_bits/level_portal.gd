@@ -1,10 +1,13 @@
 extends Area3D
 
+@onready var mesh = $MeshInstance3D
+
 var level_loader
 var player
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	mesh.hide()
 	level_loader = find_root()
 	player = level_loader.find_child("player")
 

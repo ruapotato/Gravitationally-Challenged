@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dwhdrfmnfe3k8"]
+[gd_scene load_steps=9 format=3 uid="uid://dwhdrfmnfe3k8"]
 
 [ext_resource type="PackedScene" uid="uid://du7suu1xfuodc" path="res://level_bits/small_cylinder.tscn" id="1_anpvi"]
 [ext_resource type="PackedScene" uid="uid://8u2c5gi5txf8" path="res://level_bits/level_portal.tscn" id="2_yole1"]
@@ -7,6 +7,9 @@
 [ext_resource type="PackedScene" uid="uid://cstyfyemvu5hs" path="res://level_bits/spikes_small.tscn" id="5_dscb8"]
 [ext_resource type="PackedScene" uid="uid://3eg1mw8e5scb" path="res://level_bits/clover_timer.tscn" id="6_2wjv5"]
 [ext_resource type="PackedScene" uid="uid://bfplgtblp33ft" path="res://level_bits/clover_x5.tscn" id="7_1dl7b"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_by620"]
+size = Vector3(1.66, 1.58, 0.225)
 
 [node name="introlevel" type="Node3D"]
 
@@ -164,3 +167,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.100286, 5.24719, -2)
 
 [node name="clover_x21" parent="bucket/clover_timer" instance=ExtResource("7_1dl7b")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.100286, 5.24719, -3)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.26795)
+mesh = SubResource("BoxMesh_by620")

@@ -35,15 +35,16 @@ func _process(delta: float) -> void:
 			end()
 
 func start() -> void:
-	print("Clover time!!!")
-	timer_sound.play()
-	counting = true
-	started = true  # Mark that we've started the sequence
-	count_down = 7  # Reset the countdown
-	# Make all child objects visible
-	for child in get_children():
-		if child != start_box and child != timer_sound:
-			child.visible = true
+	if not counting:
+		print("Clover time!!!")
+		timer_sound.play()
+		counting = true
+		started = true  # Mark that we've started the sequence
+		count_down = 7  # Reset the countdown
+		# Make all child objects visible
+		for child in get_children():
+			if child != start_box and child != timer_sound:
+				child.visible = true
 
 func end() -> void:
 	print("Clover time end!")
