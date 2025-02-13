@@ -1,12 +1,15 @@
 extends Node3D
 @onready var load_to_point = $loaded_level
 @onready var player = $player
+@onready var pause_menu = $pause_menu
+
 var init_save_location = "hub"
 var active_save_num = 1
 var level_keys_list = []
 var config = ConfigFile.new()
 var loaded_level = "hub"
 var clover = 0
+var paused = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -40,6 +43,20 @@ func save_game() -> void:
 	config.set_value("Level", "current_level", loaded_level)
 	config.set_value("Progress", "completed_levels", level_keys_list)
 	config.save(save_path)
+
+func hide_menu():
+	if pause_menu.visible:
+		pause_menu.hide()
+		Engine.time_scale = 1.0
+		paused = false
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+func show_menu():
+	if not pause_menu.visible:
+		pause_menu.show()
+		Engine.time_scale = 0.001
+		paused = true
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func load_level(level_name: String) -> void:
 	clover = 0

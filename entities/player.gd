@@ -12,7 +12,7 @@ extends RigidBody3D
 @onready var collision_shape = $CollisionShape3D
 
 # Movement constants
-const MOVEMENT_FORCE = 450.0
+const MOVEMENT_FORCE = 250.0
 const MAX_VELOCITY = 3.0
 const MAX_FALL_VELOCITY = 22.0
 const FRICTION_FORCE = 5.0
@@ -29,9 +29,9 @@ const KNOCKDOWN_DURATION = 3.0
 const KNOCKDOWN_ROTATION_SPEED = 5.0
 const INVULNERABILITY_DURATION = 3.0
 
-const ACCELERATION_TIME = 1.5  # Time to reach max speed
+const ACCELERATION_TIME = 1.7  # Time to reach max speed
 const INITIAL_MOVEMENT_FORCE = 70.0  # Starting force
-const MAX_MOVEMENT_FORCE = 450.0  # Maximum force (original MOVEMENT_FORCE value)
+const MAX_MOVEMENT_FORCE = 250.0  # Maximum force (original MOVEMENT_FORCE value)
 
 
 # State handling
@@ -49,6 +49,7 @@ var current_movement_force = INITIAL_MOVEMENT_FORCE
 var is_accelerating = false
 var acceleration_timer = 0.0
 var mesh_height
+var level_loader
 
 # Movement and visual variables
 var saved_check_point = Vector3(0,0,0)
@@ -71,6 +72,7 @@ func _ready() -> void:
 	can_sleep = false
 	gravity_scale = GRAVITY_SCALE
 	mesh_height = collision_shape.shape.height
+	level_loader = get_parent()
 	
 	
 	base_mesh_scale = mesh.scale
@@ -312,7 +314,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if is_knocked_down:
 		return
 		
-	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+	if event is InputEventMouseMotion and not level_loader.paused:
 		cam_piv.rotate_y(-event.relative.x * 0.005)  # Invert the rotation to fix camera direction
 		camera_arm.rotate_x(-event.relative.y * 0.005)
 		camera_arm.rotation.x = clamp(camera_arm.rotation.x, -PI/2.1, PI/2.1)
@@ -326,11 +328,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("zoom_out"):
 		camera_arm.spring_length = clamp(camera_arm.spring_length + 0.1, MIN_ZOOM, MAX_ZOOM)
 			
-	elif event.is_action_pressed("ui_cancel"):
-		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	elif event.is_action_pressed("pause"):
+		if level_loader.paused:
+			level_loader.hide_menu()
 		else:
-			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+			level_loader.show_menu()
+			
+
 	elif event.is_action_pressed("swipe"):
 		sword.swipe()
 
