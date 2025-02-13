@@ -25,40 +25,10 @@ func _ready() -> void:
 	remove_child(mesh)
 	level_loader.call_deferred("add_child", mesh)
 	voices = DisplayServer.tts_get_voices_for_language("en")
-	voices = filter_good_voices(voices)
 	print(voices)
 	rng.randomize()
 	say("Use space to flip gravity. Collect keys from each level. Collect 100 clover for an additional key.")
 
-func filter_good_voices(all_voices: Array) -> Array:
-	# List of base voice modifiers we want to keep
-	var good_modifiers = [
-		"+male1",    # Standard male voice
-		"+whisper",  # Mysterious/magical feel
-		"+Half-LifeAnnouncementSystem",  # Fun robotic voice
-		"+grandma",  # Warm, friendly voice
-		"+Demonic",  # For dramatic moments
-		"+Storm",    # Dynamic voice
-		"+UniversalRobot"  # Another good robotic option
-	]
-	
-	# Preferred English variants
-	var preferred_variants = [
-		"English (Great Britain)",
-		"English (America)"
-	]
-	
-	var filtered_voices = []
-	
-	# Only keep voices from preferred variants with good modifiers
-	for voice in all_voices:
-		for variant in preferred_variants:
-			for modifier in good_modifiers:
-				if voice.begins_with(variant) and voice.ends_with(modifier):
-					filtered_voices.append(voice)
-					break
-	
-	return filtered_voices
 
 func generate_random_color() -> Color:
 	# Generate vibrant, fairy-like colors
