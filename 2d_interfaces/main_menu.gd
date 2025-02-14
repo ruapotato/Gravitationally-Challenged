@@ -43,3 +43,16 @@ func _on_play_4_pressed() -> void:
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://2d_interfaces/Title.tscn")
+
+
+func _on_remove_saves_pressed() -> void:
+	$kill_it.show()
+
+
+func _on_kill_it_pressed() -> void:
+	var dir = DirAccess.open("user://")
+	dir.remove("user://save_1.cfg")
+	dir.remove("user://save_2.cfg") 
+	dir.remove("user://save_3.cfg")
+	dir.remove("user://save_4.cfg")
+	$kill_it.hide()
