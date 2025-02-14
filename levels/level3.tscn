@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://cxkjn2ud2f6b4"]
 
-[ext_resource type="PackedScene" uid="uid://drr77kuodww16" path="res://import/level3_walls.glb" id="1_61nwe"]
+[ext_resource type="PackedScene" uid="uid://cclhs0rmkw786" path="res://import/level3_walls.glb" id="1_61nwe"]
 [ext_resource type="Material" uid="uid://djvdvkfwwlqx4" path="res://native/fall_level.tres" id="2_4arlq"]
 [ext_resource type="PackedScene" uid="uid://bfc7h1id7p8rn" path="res://level_bits/ground_small.tscn" id="2_7tejp"]
 [ext_resource type="PackedScene" uid="uid://x5eqae34nmf7" path="res://level_bits/ground_large.tscn" id="3_srdlq"]

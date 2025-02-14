@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bfplgtblp33ft"]
 
 [ext_resource type="Script" path="res://level_bits/clover_x_5.gd" id="1_vmenb"]
-[ext_resource type="PackedScene" uid="uid://c8tbneqvmaa88" path="res://import/clover5.glb" id="2_itaya"]
+[ext_resource type="PackedScene" uid="uid://i3lr3tmfwsnw" path="res://import/clover5.glb" id="2_itaya"]
 [ext_resource type="Material" uid="uid://crvy883wu6c3d" path="res://native/coin.tres" id="3_jp2hv"]
 [ext_resource type="AudioStream" uid="uid://d30vxx4wskhb7" path="res://audio/coin.wav" id="4_cssci"]
 

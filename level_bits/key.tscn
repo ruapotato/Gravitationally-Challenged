@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bsl58gebtwki8"]
 
 [ext_resource type="Script" path="res://level_bits/key.gd" id="1_2vfdl"]
-[ext_resource type="PackedScene" uid="uid://mjn6ut57r3rv" path="res://import/Key.glb" id="2_suipd"]
+[ext_resource type="PackedScene" uid="uid://ln0cvw5hn2i1" path="res://import/Key.glb" id="2_suipd"]
 [ext_resource type="Material" uid="uid://crvy883wu6c3d" path="res://native/coin.tres" id="3_6ejmb"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_aphv7"]

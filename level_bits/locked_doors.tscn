@@ -1,14 +1,14 @@
 [gd_scene load_steps=12 format=3 uid="uid://b4j60lp5300fi"]
 
 [ext_resource type="Script" path="res://level_bits/locked_doors.gd" id="1_66chh"]
-[ext_resource type="PackedScene" uid="uid://hu3qcjs4kuup" path="res://import/Door0.glb" id="1_tsgse"]
-[ext_resource type="PackedScene" uid="uid://qfix5rm8g270" path="res://import/Door1.glb" id="2_fmijm"]
-[ext_resource type="PackedScene" uid="uid://cwr3vvll1sxye" path="res://import/Door2.glb" id="3_0j2x0"]
-[ext_resource type="PackedScene" uid="uid://dhokbleo5cnpy" path="res://import/Door3.glb" id="4_idu7v"]
-[ext_resource type="PackedScene" uid="uid://cdcsdl2agqr01" path="res://import/Door4.glb" id="5_43j47"]
-[ext_resource type="PackedScene" uid="uid://k57wmuk574ak" path="res://import/Door5.glb" id="6_qd0fc"]
-[ext_resource type="PackedScene" uid="uid://dbo5vvnbyl2kq" path="res://import/Door6.glb" id="7_maau8"]
-[ext_resource type="PackedScene" uid="uid://bjam4gh2417jd" path="res://import/Door7.glb" id="8_xqyht"]
+[ext_resource type="PackedScene" uid="uid://c5tbxf8lgq6wv" path="res://import/Door0.glb" id="1_tsgse"]
+[ext_resource type="PackedScene" uid="uid://c5kt26l2brg4h" path="res://import/Door1.glb" id="2_fmijm"]
+[ext_resource type="PackedScene" uid="uid://dirv50w1gjg0v" path="res://import/Door2.glb" id="3_0j2x0"]
+[ext_resource type="PackedScene" uid="uid://ba71jppga3dsb" path="res://import/Door3.glb" id="4_idu7v"]
+[ext_resource type="PackedScene" uid="uid://cvvtx2ndcuylt" path="res://import/Door4.glb" id="5_43j47"]
+[ext_resource type="PackedScene" uid="uid://45g7j8l2hf5s" path="res://import/Door5.glb" id="6_qd0fc"]
+[ext_resource type="PackedScene" uid="uid://drg833p4mxcm2" path="res://import/Door6.glb" id="7_maau8"]
+[ext_resource type="PackedScene" uid="uid://cdvmfhuthkk8g" path="res://import/Door7.glb" id="8_xqyht"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_l1wfi"]
 size = Vector3(0.48, 2.575, 1.65)

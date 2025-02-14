@@ -1,7 +1,7 @@
 [gd_scene load_steps=16 format=3 uid="uid://bej60nbr21nhf"]
 
 [ext_resource type="Script" path="res://entities/player.gd" id="2_ivawi"]
-[ext_resource type="PackedScene" uid="uid://cea6mpd4nqc38" path="res://import/player2.glb" id="2_tbhwb"]
+[ext_resource type="PackedScene" uid="uid://dq2oduog3uqon" path="res://import/player2.glb" id="2_tbhwb"]
 [ext_resource type="PackedScene" uid="uid://d1bq84v68elhb" path="res://2d_interfaces/game_interface_3d_props.tscn" id="2_yvaq1"]
 [ext_resource type="Material" uid="uid://5by4njtaogfn" path="res://native/player.tres" id="3_0dd4x"]
 [ext_resource type="Script" path="res://entities/legs.gd" id="3_pa33j"]

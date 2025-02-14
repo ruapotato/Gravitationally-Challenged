@@ -1,9 +1,12 @@
 extends Node3D
 
-@onready var mesh = $mesh
-@onready var audio_player = $mesh/AudioStreamPlayer3D
-var rng = RandomNumberGenerator.new()
+@onready var body = $imported_mesh/body
+@onready var mesh = $imported_mesh
+@onready var audio_player = $imported_mesh/AudioStreamPlayer3D
+@onready var wing_left = $imported_mesh/wing2
+@onready var wing_right = $imported_mesh/wing1
 
+var rng = RandomNumberGenerator.new()
 var player
 var level_loader
 var target_pos := Vector3.ZERO
@@ -21,6 +24,11 @@ var is_speaking = false
 var current_insult = 1
 var total_insults = 44
 var color_shift_time = 0.0
+
+# Wing flapping variables
+var wing_flap_speed = 15.0  # Speed of wing flapping
+var wing_flap_amplitude = 0.5  # Maximum rotation in radians (about 30 degrees)
+var wing_time = 0.0  # Time tracker for wing animation
 
 func _ready() -> void:
 	player = get_parent()
@@ -91,10 +99,22 @@ func update_color(delta: float):
 	material.emission = color * 2.0
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_HASH
 	
-	mesh.set_surface_override_material(0, material)
+	body.set_surface_override_material(0, material)
+
+func update_wings(delta: float):
+	# Update wing animation time
+	wing_time += delta * wing_flap_speed
+	
+	# Calculate wing rotation using sine wave
+	var wing_rotation = sin(wing_time) * wing_flap_amplitude
+	
+	# Apply rotations to wings (opposite directions)
+	wing_left.rotation.y = wing_rotation
+	wing_right.rotation.y = -wing_rotation  # Negative for opposite direction
 
 func _process(delta: float) -> void:
 	update_color(delta)
+	update_wings(delta)  # Add wing flapping update
 	
 	var player_pos = player.global_position
 	if player.gravity_scale < 0:
@@ -104,25 +124,32 @@ func _process(delta: float) -> void:
 	circle_bob_time += delta * 3.0
 	
 	if is_speaking:
+		# When speaking, stay directly in front of player
 		var player_facing = -player.transform.basis.z
 		target_pos = player_pos + player_facing * 1.0
 		target_pos.y = player_pos.y + 1.0
-		velocity = velocity.lerp((target_pos - mesh.global_position) * 5.0, delta * 20.0)
 	else:
 		if player_moving:
+			# Reset idle time when player moves
 			idle_time = 0.0
+			# Stay slightly behind and above player when moving
 			var player_facing = -player.transform.basis.z
-			target_pos = player_pos + player_facing * trail_distance
-			target_pos.y = player_pos.y + 1.5
+			target_pos = player_pos + player_facing * (trail_distance * 0.5)
+			target_pos.y = player_pos.y + 1.2
 		else:
-			idle_time += delta
-			if idle_time > 0.5:
-				circle_time += delta * (1.5 + sin(circle_bob_time) * 0.3)
-				target_pos = player_pos + Vector3(
-					cos(circle_time) * (circle_radius + sin(circle_bob_time * 0.7) * 0.2),
-					1.5 + sin(circle_bob_time) * 0.2,
-					sin(circle_time) * (circle_radius + sin(circle_bob_time * 0.7) * 0.2)
-				)
+			# Continuous circular motion when player is still
+			circle_time += delta * (1.0 + sin(circle_bob_time) * 0.2)
+			var circle_offset = Vector3(
+				cos(circle_time) * (circle_radius * 0.7),
+				0.8 + sin(circle_bob_time) * 0.1,
+				sin(circle_time) * (circle_radius * 0.7)
+			)
+			target_pos = player_pos + circle_offset
+			
+	# Apply movement towards target position
+	var direction = target_pos - mesh.global_position
+	var target_velocity = direction * 5.0
+	velocity = velocity.lerp(target_velocity, delta * 10.0)
 	
 	mesh.global_position += velocity * delta
 	
