@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://2d_interfaces/main_menu.gd" id="1_dpsd7"]
 [ext_resource type="Texture2D" uid="uid://divknqltj1n7n" path="res://images/night sky.jpg" id="2_vb4yk"]
-[ext_resource type="StyleBox" path="res://2d_interfaces/back2.tres" id="3_oscre"]
-[ext_resource type="StyleBox" path="res://2d_interfaces/back1.tres" id="4_7w6eg"]
+[ext_resource type="StyleBox" uid="uid://bwmiyln8wlgh5" path="res://2d_interfaces/back2.tres" id="3_oscre"]
+[ext_resource type="StyleBox" uid="uid://bwerkbykfhxxg" path="res://2d_interfaces/back1.tres" id="4_7w6eg"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8n5ft"]
 texture = ExtResource("2_vb4yk")
