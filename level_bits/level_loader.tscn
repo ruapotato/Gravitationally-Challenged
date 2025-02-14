@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://5v0415em08vj"]
+[gd_scene load_steps=9 format=3 uid="uid://5v0415em08vj"]
 
 [ext_resource type="Script" path="res://level_bits/level_loader.gd" id="1_fp5wk"]
 [ext_resource type="PackedScene" uid="uid://bej60nbr21nhf" path="res://entities/player.tscn" id="1_wnodb"]
 [ext_resource type="PackedScene" uid="uid://daxn46nmxbap2" path="res://2d_interfaces/game_interface.tscn" id="3_vaupo"]
 [ext_resource type="PackedScene" uid="uid://d146bwqv6ko3u" path="res://2d_interfaces/pause_menu.tscn" id="4_rsgvt"]
+[ext_resource type="PackedScene" uid="uid://dq46s548gc4hy" path="res://level_bits/music.tscn" id="5_6ljx4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3gamy"]
 sky_top_color = Color(1, 1, 1, 1)
@@ -16,14 +17,17 @@ sky_material = SubResource("ProceduralSkyMaterial_3gamy")
 [sub_resource type="Environment" id="Environment_n8nu8"]
 background_mode = 2
 sky = SubResource("Sky_57lhl")
+ambient_light_source = 1
 ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 9.95
+ambient_light_energy = 6.25
 tonemap_mode = 2
 ssr_enabled = true
 ssao_enabled = true
 ssil_enabled = true
+sdfgi_enabled = true
 glow_enabled = true
 volumetric_fog_enabled = true
+adjustment_enabled = true
 
 [node name="level_loader" type="Node3D"]
 script = ExtResource("1_fp5wk")
@@ -44,3 +48,5 @@ shadow_enabled = true
 [node name="game_interface" parent="." instance=ExtResource("3_vaupo")]
 
 [node name="pause_menu" parent="." instance=ExtResource("4_rsgvt")]
+
+[node name="music" parent="." instance=ExtResource("5_6ljx4")]

@@ -3,6 +3,8 @@ extends Node3D
 @onready var player = $player
 @onready var pause_menu = $pause_menu
 @onready var key_scene = preload("res://level_bits/key.tscn")
+@onready var music = $music
+
 
 var init_save_location = "hub"
 var active_save_num = 1
@@ -85,6 +87,7 @@ func load_level(level_name: String) -> void:
 	player.angular_velocity = Vector3(0,0,0)
 	player.linear_velocity = Vector3(0,0,0)
 	player.save_check_point(Vector3(0,0,0))
+	music.play_song()
 	if player.gravity_scale < 0:
 		player.flip_gravity()
 
