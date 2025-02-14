@@ -1,125 +1,101 @@
 extends Node3D
 
 @onready var mesh = $mesh
-var voices
+@onready var audio_player = $mesh/AudioStreamPlayer3D
 var rng = RandomNumberGenerator.new()
 
 var player
 var level_loader
 var target_pos := Vector3.ZERO
 var velocity := Vector3.ZERO
-var trail_distance = 1.5  # How far behind player to follow
-var circle_radius = 1.0   # Circle radius when player is still
-var max_speed = 3.0      # Maximum movement speed
-var acceleration = 15.0   # How quickly it speeds up
-var deceleration = 8.0    # How quickly it slows down
-var idle_time = 0.0      # Track how long player has been still
-var circle_time = 0.0    # For circular motion
+var trail_distance = 1.5
+var circle_radius = 1.0
+var max_speed = 3.0
+var acceleration = 15.0
+var deceleration = 8.0
+var idle_time = 0.0
+var circle_time = 0.0
 var last_player_pos = Vector3.ZERO
-var circle_bob_time = 0.0 # For bobbing while circling
-var is_speaking = false  # Track if currently speaking
+var circle_bob_time = 0.0
+var is_speaking = false
+var current_insult = 1
+var total_insults = 44
+var color_shift_time = 0.0
 
 func _ready() -> void:
 	player = get_parent()
 	level_loader = player.get_parent()
 	remove_child(mesh)
 	level_loader.call_deferred("add_child", mesh)
-	voices = DisplayServer.tts_get_voices_for_language("en")
-	print(voices)
 	rng.randomize()
-	say("Use space to flip gravity. Collect keys from each level. Collect 100 clover for an additional key.")
+	
+	# Setup 3D audio system
+	audio_player.finished.connect(_on_audio_finished)
+	
+	call_deferred("init_message")
 
+func insult():
+	is_speaking = true
+	var audio_stream = load("res://AI_GEN/insult/" + str(current_insult) + ".wav")
+	if current_insult >= total_insults:
+		audio_stream = load("res://AI_GEN/just_wow.wav")
+		current_insult = 1
+	else:
+		current_insult += 1
+	
+	audio_player.stream = audio_stream
+	audio_player.play()
 
-func generate_random_color() -> Color:
-	# Generate vibrant, fairy-like colors
-	var h = randf()  # Random hue
-	var s = randf_range(0.7, 1.0)  # High saturation
-	var v = randf_range(0.8, 1.0)  # High value for brightness
-	
-	# Convert HSV to RGB
-	var i = floor(h * 6)
-	var f = h * 6 - i
-	var p = v * (1 - s)
-	var q = v * (1 - f * s)
-	var t = v * (1 - (1 - f) * s)
-	
-	var r := 0.0
-	var g := 0.0
-	var b := 0.0
-	
-	match int(i) % 6:
-		0: 
-			r = v; g = t; b = p
-		1:
-			r = q; g = v; b = p
-		2:
-			r = p; g = v; b = t
-		3:
-			r = p; g = q; b = v
-		4:
-			r = t; g = p; b = v
-		5:
-			r = v; g = p; b = q
-	
-	return Color(r, g, b)
+func init_message():
+	is_speaking = true
+	audio_player.stream = load("res://AI_GEN/start_up.wav")
+	audio_player.play()
+	print("Hi")
 
-func say(text: String) -> void:
-	shut_up()
-	var phrases = []  # Store our phrases to speak
-	var current_phrase = ""
-	
-	# First, split into phrases
-	for word in text.split(" "):
-		current_phrase += word + " "
-		if word.ends_with(".") or word.ends_with(","):
-			if current_phrase.strip_edges() != "":
-				phrases.append(current_phrase.strip_edges())
-			current_phrase = ""
-	
-	# Add any remaining text
-	if current_phrase.strip_edges() != "":
-		phrases.append(current_phrase.strip_edges())
-	
-	# Now speak each phrase with proper timing
-	for phrase in phrases:
-		is_speaking = true
-		var voice_id = get_fun_voice_id()
-		DisplayServer.tts_speak(phrase, voice_id)
-		
-		# Wait for TTS to actually start before changing color
-		await get_tree().create_timer(0.05).timeout
-		if mesh:
-			print("Color change for: ", phrase)
-			mesh.set_surface_override_material(0, 
-				create_material_from_color(generate_random_color()))
-		
-		# Wait for approximate speech duration based on phrase length
-		var wait_time = 0.1 + (0.05 * phrase.length())
-		await get_tree().create_timer(wait_time).timeout
-		is_speaking = false
+func key_spawn_message():
+	is_speaking = true
+	audio_player.stream = load("res://AI_GEN/100_clover.wav")
+	audio_player.play()
 
-func create_material_from_color(color: Color) -> StandardMaterial3D:
-	var material = StandardMaterial3D.new()
-	material.albedo_color = color
-	material.albedo_color.a = .5
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_HASH
-	material.emission = material.albedo_color
-	return material
-
-func shut_up() -> void:
-	DisplayServer.tts_stop()
+func _on_audio_finished():
 	is_speaking = false
 
-func get_fun_voice_id() -> String:
-	var preferred_voice = "English (Great Britain)+Half-LifeAnnouncementSystem"
-	# Try to find the Half-Life voice in our available voices
-	for voice in voices:
-		if voice == preferred_voice:
-			return voice
-	# If not found, return first available voice as fallback
-	return voices[0]
+func hsv_to_rgb(h: float, s: float, v: float) -> Color:
+	var hi = int(h * 6.0) % 6
+	var f = h * 6.0 - float(hi)
+	var p = v * (1.0 - s)
+	var q = v * (1.0 - f * s)
+	var t = v * (1.0 - (1.0 - f) * s)
+	
+	match hi:
+		0: return Color(v, t, p)
+		1: return Color(q, v, p)
+		2: return Color(p, v, t)
+		3: return Color(p, q, v)
+		4: return Color(t, p, v)
+		_: return Color(v, p, q)
+
+func update_color(delta: float):
+	if not is_speaking:
+		return
+		
+	# Shift color while speaking
+	color_shift_time += delta * 0.5
+	var hue = fmod(color_shift_time, 1.0)
+	var color = hsv_to_rgb(hue, 0.7, 0.9)
+	
+	var material = StandardMaterial3D.new()
+	material.albedo_color = color
+	material.albedo_color.a = 0.7
+	material.emission_enabled = true
+	material.emission = color * 2.0
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_HASH
+	
+	mesh.set_surface_override_material(0, material)
 
 func _process(delta: float) -> void:
+	update_color(delta)
+	
 	var player_pos = player.global_position
 	if player.gravity_scale < 0:
 		player_pos.y -= 2
@@ -127,15 +103,12 @@ func _process(delta: float) -> void:
 	last_player_pos = player_pos
 	circle_bob_time += delta * 3.0
 	
-	# Calculate desired position based on speaking state
 	if is_speaking:
-		# Move directly in front of player when speaking
 		var player_facing = -player.transform.basis.z
-		target_pos = player_pos + player_facing * 1.0  # Closer distance while speaking
-		target_pos.y = player_pos.y + 1.0  # Slightly lower while speaking
-		velocity = velocity.lerp((target_pos - mesh.global_position) * 5.0, delta * 20.0)  # Fast movement to speaking position
+		target_pos = player_pos + player_facing * 1.0
+		target_pos.y = player_pos.y + 1.0
+		velocity = velocity.lerp((target_pos - mesh.global_position) * 5.0, delta * 20.0)
 	else:
-		# Normal movement behavior when not speaking
 		if player_moving:
 			idle_time = 0.0
 			var player_facing = -player.transform.basis.z
@@ -143,34 +116,16 @@ func _process(delta: float) -> void:
 			target_pos.y = player_pos.y + 1.5
 		else:
 			idle_time += delta
-			if idle_time > 0.5:  # Shorter delay before circling
-				circle_time += delta * (1.5 + sin(circle_bob_time) * 0.3)  # Varying circle speed
+			if idle_time > 0.5:
+				circle_time += delta * (1.5 + sin(circle_bob_time) * 0.3)
 				target_pos = player_pos + Vector3(
 					cos(circle_time) * (circle_radius + sin(circle_bob_time * 0.7) * 0.2),
-					1.5 + sin(circle_bob_time) * 0.2,  # Gentle bob up/down
+					1.5 + sin(circle_bob_time) * 0.2,
 					sin(circle_time) * (circle_radius + sin(circle_bob_time * 0.7) * 0.2)
 				)
-		
-		# Calculate distance to target
-		var to_target = target_pos - mesh.global_position
-		var distance = to_target.length()
-		
-		# Adjust acceleration based on distance
-		var current_acceleration = acceleration
-		if distance > 3.0:
-			current_acceleration *= 2.0  # Faster acceleration when far away
-		
-		# Apply acceleration towards target
-		var desired_velocity = to_target.normalized() * max_speed
-		if distance < 1.0:
-			desired_velocity *= distance  # Slow down when close
-		
-		velocity = velocity.lerp(desired_velocity, delta * current_acceleration)
 	
-	# Apply movement to mesh
 	mesh.global_position += velocity * delta
 	
-	# Smooth look-at with some lag
 	var look_target = player_pos + Vector3.UP * 0.5
 	var current_look = mesh.global_transform.looking_at(look_target, Vector3.UP)
 	mesh.transform = mesh.transform.interpolate_with(current_look, delta * 5.0)

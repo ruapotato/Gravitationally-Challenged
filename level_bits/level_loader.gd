@@ -108,7 +108,7 @@ func spawn_clover_key():
 	new_key.name = loaded_level + "_coverkey"
 	load_to_point.add_child(new_key)
 	new_key.global_position = spawn_location
-	player.fairy.say("A new key! It spawned thanks to the 100 clover you collected!")
+	player.fairy.key_spawn_message()
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

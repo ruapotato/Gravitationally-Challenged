@@ -33,7 +33,6 @@ const INVULNERABILITY_DURATION = 3.0
 const ACCELERATION_TIME = 1.7  # Time to reach max speed
 const INITIAL_MOVEMENT_FORCE = 70.0  # Starting force
 const MAX_MOVEMENT_FORCE = 250.0  # Maximum force (original MOVEMENT_FORCE value)
-const InsultsResource = preload("res://entities/insults.gd")
 
 var insults: Resource
 # State handling
@@ -76,9 +75,7 @@ func _ready() -> void:
 	can_sleep = false
 	gravity_scale = GRAVITY_SCALE
 	mesh_height = collision_shape.shape.height
-	level_loader = get_parent()
-	insults = InsultsResource.new()
-	
+	level_loader = get_parent()	
 	
 	base_mesh_scale = mesh.scale
 	initial_mesh_position = mesh.position
@@ -98,13 +95,11 @@ func _ready() -> void:
 		mesh.add_child(leg_anim)
 		leg_animator = leg_anim
 
-func insult() -> void:
-	fairy.say(insults.get_insult())
 
 func start_knockdown() -> void:
 	if not is_knocked_down and not is_invulnerable:
 		die_sound.play()
-		insult()
+		fairy.insult()
 		
 		is_knocked_down = true
 		action_state = ActionState.KNOCKDOWN
