@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://bif4c56lalkna"]
+[gd_scene load_steps=9 format=3 uid="uid://bif4c56lalkna"]
 
 [ext_resource type="Script" path="res://weapons/sword.gd" id="1_0ll7p"]
 [ext_resource type="AudioStream" uid="uid://cyfkojsywoyr2" path="res://audio/sword.wav" id="2_ca0c4"]
-[ext_resource type="PackedScene" uid="uid://dok1553mkwna3" path="res://import/sword.glb" id="3_uqfsh"]
+[ext_resource type="PackedScene" uid="uid://djus6d5djyqs0" path="res://import/sword.glb" id="3_uqfsh"]
+[ext_resource type="Material" uid="uid://dxjk4ve6h5rv3" path="res://native/sword_core.tres" id="4_6p11b"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_5hnmv"]
 size = Vector3(0.84, 0.225, 0.27)
@@ -45,3 +46,8 @@ stream = ExtResource("2_ca0c4")
 
 [node name="sword2" parent="." instance=ExtResource("3_uqfsh")]
 transform = Transform3D(-4.26839e-08, -0.308269, 0.40731, -1.90963e-08, 0.75445, 0.166428, -1.155, -1.08145e-09, -1.78041e-08, 0.391, -0.386, 0)
+
+[node name="sword" parent="sword2" index="0"]
+surface_material_override/0 = ExtResource("4_6p11b")
+
+[editable path="sword2"]

@@ -21,6 +21,10 @@ window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/mode=3
 
+[filesystem]
+
+import/blender/enabled=false
+
 [input]
 
 left={
@@ -79,3 +83,8 @@ pause={
 3d/run_on_separate_thread=true
 common/physics_ticks_per_second=120
 3d/default_gravity_vector=Vector3(0, -3, 0)
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
