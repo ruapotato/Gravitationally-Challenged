@@ -29,10 +29,14 @@ const STRETCH_SPEED = 8.0
 const KNOCKDOWN_DURATION = 3.0
 const KNOCKDOWN_ROTATION_SPEED = 5.0
 const INVULNERABILITY_DURATION = 3.0
-
 const ACCELERATION_TIME = 1.7  # Time to reach max speed
 const INITIAL_MOVEMENT_FORCE = 70.0  # Starting force
 const MAX_MOVEMENT_FORCE = 250.0  # Maximum force (original MOVEMENT_FORCE value)
+const DASH_FORCE = 8.0
+const DASH_DURATION = 0.5
+const DASH_COOLDOWN = 1.0
+const DASH_ROTATION_SPEED = .1  # Speed of the forward roll
+const DASH_ROTATION = PI/2  # 90 degree rotation down
 
 var insults: Resource
 # State handling
@@ -60,6 +64,16 @@ var base_mesh_scale: Vector3
 var current_stretch: float = MIN_STRETCH
 var target_mesh_transform: Transform3D
 var last_movement_direction: Vector3 = Vector3.FORWARD
+var is_dashing: bool = false
+var dash_timer: float = 0.0
+var dash_cooldown_timer: float = 0.0
+var dash_direction: Vector3 = Vector3.ZERO
+var can_dash: bool = true
+var initial_dash_rotation: Vector3
+var target_dash_rotation: Vector3
+var current_dash_rotation: float = 0.0
+var is_grounded: bool = false
+var has_air_dash: bool = true  # New variable to track available air dash
 
 
 func _ready() -> void:
@@ -131,6 +145,104 @@ func process_knockdown(delta: float) -> void:
 			mesh.position = initial_mesh_position
 			load_check_point()
 
+
+func start_dash() -> void:
+	if not is_dashing and not is_knocked_down:
+		# Ground dash
+		if is_grounded and can_dash:
+			execute_dash()
+		# Air dash
+		elif not is_grounded and has_air_dash:
+			has_air_dash = false  # Consume air dash
+			execute_dash()
+
+
+
+func check_ground_contact(state: PhysicsDirectBodyState3D) -> bool:
+	var space_state = get_world_3d().direct_space_state
+	
+	# Make check distance dynamic based on velocity, but with a minimum
+	var vertical_speed = abs(state.linear_velocity.y)
+	var check_distance = max(1.0, vertical_speed * state.step * 2.0)
+	
+	# Determine ray direction based on gravity
+	var ray_direction = Vector3.DOWN if not gravity_inverted else Vector3.UP
+	
+	# Use global position
+	var base_origin = global_position
+	
+	# More comprehensive ray pattern for better coverage
+	var ray_offsets = [
+		Vector3.ZERO,              # Center
+		Vector3(0.3, 0, 0),       # Right
+		Vector3(-0.3, 0, 0),      # Left
+		Vector3(0, 0, 0.3),       # Front
+		Vector3(0, 0, -0.3),      # Back
+		Vector3(0.3, 0, 0.3),     # Front-Right
+		Vector3(-0.3, 0, 0.3),    # Front-Left
+		Vector3(0.3, 0, -0.3),    # Back-Right
+		Vector3(-0.3, 0, -0.3),   # Back-Left
+	]
+	
+	# Try multiple heights for more reliable detection
+	var height_offsets = [-0.1, 0.0, 0.1]
+	
+	for height in height_offsets:
+		for offset in ray_offsets:
+			var adjusted_origin = base_origin + Vector3(0, height, 0)
+			var ray_start = adjusted_origin + offset
+			var ray_end = ray_start + (ray_direction * check_distance)
+			
+			var query = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
+			query.exclude = [self]
+			
+			var collision = space_state.intersect_ray(query)
+			if collision:
+				return true
+	
+	return false
+
+
+func execute_dash() -> void:
+	is_dashing = true
+	dash_timer = 0.0
+	dash_direction = last_movement_direction
+	can_dash = false  # Consume ground dash ability and start cooldown
+	
+	# Set up rotation for the dash
+	initial_dash_rotation = mesh.rotation
+	target_dash_rotation = initial_dash_rotation
+	if gravity_inverted:
+		target_dash_rotation += Vector3(DASH_ROTATION, 0, 0)
+	else:
+		target_dash_rotation += Vector3(-DASH_ROTATION, 0, 0)
+	current_dash_rotation = 0.0
+
+func process_dash(delta: float) -> void:
+	if is_dashing:
+		dash_timer += delta
+		
+		# Calculate rotation progress
+		var rotation_progress = dash_timer / DASH_DURATION
+		rotation_progress = ease(rotation_progress, 0.1)  # Smooth out the rotation
+		
+		# Update mesh rotation during dash
+		mesh.rotation = initial_dash_rotation.lerp(target_dash_rotation, rotation_progress)
+		
+		if dash_timer >= DASH_DURATION:
+			is_dashing = false
+			dash_timer = 0.0
+			# Reset mesh rotation to normal
+			mesh.rotation = initial_dash_rotation
+			dash_cooldown_timer = 0.0  # Start the cooldown when dash ends
+	
+	# Handle cooldown timer
+	if not can_dash:
+		dash_cooldown_timer += delta
+		if dash_cooldown_timer >= DASH_COOLDOWN:
+			can_dash = true
+
+
 func start_invulnerability() -> void:
 	check_point_sound.play()
 	is_invulnerable = true
@@ -145,10 +257,14 @@ func process_invulnerability(delta: float) -> void:
 		if mesh:
 			mesh.visible = fmod(invulnerability_timer, 0.2) < 0.1
 
+
 func update_target_mesh_transform(velocity: Vector3) -> void:
 	if is_knocked_down:
 		return
 		
+	if is_dashing:
+		return  # Don't update mesh transform during dash
+	
 	var speed = velocity.length() / MAX_VELOCITY
 	current_stretch = lerp(current_stretch, lerp(MIN_STRETCH, MAX_STRETCH, speed), get_physics_process_delta_time() * STRETCH_SPEED)
 	
@@ -165,15 +281,16 @@ func update_target_mesh_transform(velocity: Vector3) -> void:
 	# Create flip transform for inverted gravity
 	var flip = Transform3D()
 	if gravity_inverted:
-		# First rotate around the right axis (X) to flip upside down
 		flip = flip.rotated(Vector3.RIGHT, PI)
-		# Then rotate around up axis (Y) to correct the forward direction
 		flip = flip.rotated(Vector3.UP, PI)
 	
 	# Combine all transformations
 	target_mesh_transform = Transform3D(look_basis, mesh.position) * stretch * flip
 	
-	leg_animator.animate_legs(get_physics_process_delta_time(), speed)
+	# Only animate legs when grounded
+	if is_grounded:
+		leg_animator.animate_legs(get_physics_process_delta_time(), speed)
+
 
 func update_mesh_transform(delta: float) -> void:
 	if not is_knocked_down:
@@ -184,10 +301,24 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	if is_knocked_down:
 		return
 		
+	# Update grounded state
+	var was_grounded = is_grounded
+	is_grounded = check_ground_contact(state)
+	
+	# Reset abilities when landing
+	if is_grounded and not was_grounded:
+		has_air_dash = true
+	
 	var current_velocity = state.linear_velocity
 	
 	var vertical_velocity = Vector3(0, current_velocity.y, 0)
 	var horizontal_velocity = Vector3(current_velocity.x, 0, current_velocity.z)
+	
+	# Handle dash movement
+	if is_dashing:
+		horizontal_velocity = dash_direction * DASH_FORCE
+		state.linear_velocity = horizontal_velocity  # Remove vertical velocity while dashing
+		return
 	
 	# Get input and handle direction based on gravity
 	var input_dir = Input.get_vector("left", "right", "up", "down") 
@@ -287,7 +418,9 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	
 	update_target_mesh_transform(horizontal_velocity)
 	update_mesh_transform(state.step)
-	
+
+
+
 func flip_gravity() -> void:
 	linear_velocity.y = 0
 	flip_sound.play()
@@ -320,7 +453,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 		
 	if event is InputEventMouseMotion and not level_loader.paused:
-		cam_piv.rotate_y(-event.relative.x * 0.005)  # Invert the rotation to fix camera direction
+		cam_piv.rotate_y(-event.relative.x * 0.005)
 		camera_arm.rotate_x(-event.relative.y * 0.005)
 		camera_arm.rotation.x = clamp(camera_arm.rotation.x, -PI/2.1, PI/2.1)
 	
@@ -338,13 +471,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			level_loader.hide_menu()
 		else:
 			level_loader.show_menu()
-			
-
+	
 	elif event.is_action_pressed("swipe"):
 		sword.swipe()
-
+		
+	elif event.is_action_pressed("dash"):
+		start_dash()
+		
+		
 func _process(delta: float) -> void:
 	update_camera(delta)
 	if is_knocked_down:
 		process_knockdown(delta)
 	process_invulnerability(delta)
+	process_dash(delta) 
