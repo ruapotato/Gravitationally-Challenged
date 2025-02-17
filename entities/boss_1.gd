@@ -6,9 +6,11 @@ extends Area3D
 # Core boss parameters
 @export var max_health := 3
 @export var energy_ball_speed := 8.0
-@export var reflect_chance := 0.8  # 80% chance to reflect like Ganondorf
-@export var speed_increase := 1.3  # 30% faster each volley
-@export var reveal_distance := 0.5  # Distance to reveal good mesh
+@export var reflect_chance := 0.9  # 90% chance to reflect like Ganondorf
+@export var speed_increase := 1.25  # 25% faster each volley
+@export var reveal_distance := 0.35  # Distance to reveal good mesh
+@export var max_speed := 12.5
+
 
 # Movement parameters
 @export var float_height := 0.4
@@ -267,8 +269,11 @@ func defeat() -> void:
 func shoot_energy_ball() -> void:
 	if current_energy_ball != null:
 		return
-		
+	
+	volley_count = 0
 	current_ball_speed = energy_ball_speed + (volley_count * 2.0)
+	print("shoot: " + str(current_ball_speed))
+	print("Volley: " + str(volley_count))
 	current_energy_ball = ENERGY_BALL_SCENE.instantiate()
 	level_loader.add_child(current_energy_ball)
 	current_energy_ball.set_deferred("boss", self)
@@ -291,6 +296,9 @@ func _on_energy_ball_reflected() -> bool:
 	if randf() < reflect_chance:
 		# Boss succeeds reflection
 		current_ball_speed *= speed_increase
+		print(current_ball_speed)
+		if current_ball_speed > max_speed:
+			current_ball_speed = max_speed
 		return true
 	else:
 		# Boss fails reflection

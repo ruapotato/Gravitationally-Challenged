@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://blilllblimqsk"]
+[gd_scene load_steps=6 format=3 uid="uid://blilllblimqsk"]
 
+[ext_resource type="PackedScene" uid="uid://e7mgfcp76sj4" path="res://level_bits/be_gone.tscn" id="3_4skxt"]
 [ext_resource type="Material" uid="uid://dmqmxlsyb7nhe" path="res://native/stone_wall.tres" id="3_vd7wf"]
 [ext_resource type="PackedScene" uid="uid://c1w3ayk1f424h" path="res://entities/boss_1.tscn" id="4_ye3du"]
 
@@ -26,3 +27,6 @@ skeleton = NodePath("../..")
 
 [node name="Boss_1" parent="." instance=ExtResource("4_ye3du")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.51695)
+
+[node name="be_gone" parent="." instance=ExtResource("3_4skxt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.21225, 0)

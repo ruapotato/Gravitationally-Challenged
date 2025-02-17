@@ -8,7 +8,7 @@ var speed := 0.0
 var boss = null
 var sword_edge = null
 var reflected := false
-
+var sword 
 
 func _physics_process(delta: float) -> void:
 	# Get direction to current target
@@ -71,12 +71,15 @@ func _attempt_boss_reflection() -> void:
 		boss._on_energy_ball_hit_boss()
 
 func _on_area_entered(area: Area3D) -> void:
-	sword_edge = boss.player.find_child("sword").find_child("Cutting Edge")
-	if area == sword_edge and not reflected:
-		reflect()
+	sword = boss.player.find_child("sword")
+	if sword.is_animating:
+		sword_edge = sword.find_child("Cutting Edge")
+		if area == sword_edge and not reflected:
+			reflect()
 
 func _on_body_entered(body: Node3D) -> void:
 	if body == boss.player and not reflected:
 		print("boss.player hit!")
+		boss.player.flip_gravity()
 		boss._on_energy_ball_hit_player()  # Notify boss about hit
 		queue_free()

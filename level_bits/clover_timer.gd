@@ -4,7 +4,7 @@ extends Node3D
 
 var level_loader
 var player
-var count_down = 12
+var count_down = 13
 var counting = false
 var started = false  # Track if we've started the sequence
 
