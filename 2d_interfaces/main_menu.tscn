@@ -1,9 +1,10 @@
-[gd_scene load_steps=22 format=3 uid="uid://cs1so7yo7rrrp"]
+[gd_scene load_steps=23 format=3 uid="uid://cs1so7yo7rrrp"]
 
 [ext_resource type="Script" path="res://2d_interfaces/main_menu.gd" id="1_dpsd7"]
 [ext_resource type="Texture2D" uid="uid://divknqltj1n7n" path="res://images/night sky.jpg" id="2_vb4yk"]
 [ext_resource type="StyleBox" path="res://2d_interfaces/back2.tres" id="3_oscre"]
 [ext_resource type="StyleBox" path="res://2d_interfaces/back1.tres" id="4_7w6eg"]
+[ext_resource type="Texture2D" uid="uid://b26n5qiywwtpg" path="res://images/controls.png" id="5_b2iqc"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8n5ft"]
 texture = ExtResource("2_vb4yk")
@@ -199,6 +200,10 @@ offset_right = 1822.0
 offset_bottom = 1061.0
 theme = SubResource("Theme_13mo0")
 text = "Kill it!"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1558, 411)
+texture = ExtResource("5_b2iqc")
 
 [connection signal="pressed" from="Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="Saved Files/Play1" to="." method="_on_play_1_pressed"]

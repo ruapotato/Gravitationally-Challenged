@@ -8,8 +8,8 @@ extends Area3D
 @export var energy_ball_speed := 8.0
 @export var reflect_chance := 0.9  # 90% chance to reflect like Ganondorf
 @export var speed_increase := 1.25  # 25% faster each volley
-@export var reveal_distance := 0.35  # Distance to reveal good mesh
-@export var max_speed := 12.5
+@export var reveal_distance := 0.05  # Distance to reveal good mesh
+@export var max_speed := 25
 
 
 # Movement parameters
@@ -296,9 +296,9 @@ func _on_energy_ball_reflected() -> bool:
 	if randf() < reflect_chance:
 		# Boss succeeds reflection
 		current_ball_speed *= speed_increase
-		print(current_ball_speed)
 		if current_ball_speed > max_speed:
 			current_ball_speed = max_speed
+		print(current_ball_speed)
 		return true
 	else:
 		# Boss fails reflection

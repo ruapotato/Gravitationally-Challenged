@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://d146bwqv6ko3u"]
+[gd_scene load_steps=12 format=3 uid="uid://d146bwqv6ko3u"]
 
 [ext_resource type="Script" path="res://2d_interfaces/pause_menu.gd" id="1_auh0v"]
 [ext_resource type="StyleBox" path="res://2d_interfaces/back2.tres" id="2_m6o3c"]
 [ext_resource type="StyleBox" path="res://2d_interfaces/back1.tres" id="3_svv4k"]
+[ext_resource type="Texture2D" uid="uid://b26n5qiywwtpg" path="res://images/controls.png" id="4_qfi3h"]
 
 [sub_resource type="Theme" id="Theme_g2yde"]
 Button/font_sizes/font_size = 37
@@ -97,6 +98,10 @@ offset_right = 1149.0
 offset_bottom = 1016.0
 theme = SubResource("Theme_wfab7")
 text = "exit"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1558, 411)
+texture = ExtResource("4_qfi3h")
 
 [connection signal="pressed" from="resume" to="." method="_on_resume_pressed"]
 [connection signal="pressed" from="reset_level" to="." method="_on_reset_level_pressed"]

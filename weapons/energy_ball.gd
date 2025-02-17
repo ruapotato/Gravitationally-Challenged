@@ -54,20 +54,19 @@ func reflect() -> void:
 	flash_tween.tween_property(mesh, "scale", Vector3.ONE, 0.1)
 
 func _attempt_boss_reflection() -> void:
-	# Tell boss about reflection, get result
 	var did_reflect = boss._on_energy_ball_reflected()
 	
 	if did_reflect:
-		# Boss successfully reflected
 		reflected = false
 		speed *= boss.speed_increase
-		
-		# Visual feedback for boss reflection
+		# Add max speed check
+		if speed > boss.max_speed:
+			speed = boss.max_speed
+			
 		var flash_tween = create_tween()
 		flash_tween.tween_property(mesh, "scale", Vector3.ONE * 1.8, 0.15)
 		flash_tween.tween_property(mesh, "scale", Vector3.ONE, 0.15)
 	else:
-		# Boss failed to reflect - hit them
 		boss._on_energy_ball_hit_boss()
 
 func _on_area_entered(area: Area3D) -> void:

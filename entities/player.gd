@@ -8,6 +8,7 @@ extends RigidBody3D
 @onready var sword = $mesh/sword
 @onready var die_sound = $mesh/player_sounds/die
 @onready var flip_sound = $mesh/player_sounds/flip
+@onready var dash_sound = $mesh/player_sounds/dash
 @onready var check_point_sound = $mesh/player_sounds/check_point_sound
 @onready var collision_shape = $CollisionShape3D
 @onready var fairy = $fairy
@@ -204,6 +205,7 @@ func check_ground_contact(state: PhysicsDirectBodyState3D) -> bool:
 
 
 func execute_dash() -> void:
+	dash_sound.play()
 	is_dashing = true
 	dash_timer = 0.0
 	dash_direction = last_movement_direction
